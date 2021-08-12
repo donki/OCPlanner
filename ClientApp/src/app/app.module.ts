@@ -8,7 +8,11 @@ import { AppComponent } from './app.component';
 import { GanttComponent } from './gantt/gantt.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ToastrModule } from 'ngx-toastr';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { SpinnerModule } from 'primeng/spinner';
+import { InputTextModule } from 'primeng/inputtext';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 
 export const protectedResourceMap: [string, string[]][] = [
@@ -58,9 +62,14 @@ export function MSALAngularConfigFactory(): MsalAngularConfiguration {
     FormsModule,
     BrowserAnimationsModule,   
     MsalModule,
-    ToastrModule.forRoot()    
+    ProgressBarModule,
+    SpinnerModule,
+    InputTextModule,
+    ToastModule
+    
+    
   ],
-  providers: [
+  providers: [ MessageService,
     {
       provide: MSAL_CONFIG,
       useFactory: MSALConfigFactory

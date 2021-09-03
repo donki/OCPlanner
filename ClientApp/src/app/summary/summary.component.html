@@ -1,0 +1,89 @@
+
+<div [hidden]=!this.globals.PlanTabVisible>
+  <div class="d-flex justify-content-center mt-2 mb-2"><input type="text" pInputText [(ngModel)]="this.globals.project.ProjectName" (change)="this.globals.updateProjectInfo()" size="100"/></div>  
+  <div class="d-flex justify-content-center mt-2 mb-2">
+      <span class="mr-2 mt-2 ml-2"> Inicio</span>
+      <p-calendar [(ngModel)]="this.globals.project.StartDate" dateFormat="dd/mm/yy"  required></p-calendar>
+      <span class="mr-2 mt-2 ml-2"> Final</span>      
+      <p-calendar [(ngModel)]="this.globals.project.EndDate" dateFormat="dd/mm/yy"  required></p-calendar>
+      <button pButton class="mr-2 ml-2" type="button" label="Refrescar" (click)="this.updateProjectInfo()"></button>
+      <span class="mr-2 mt-2 ml-2"> Horas diarias planificables</span>   
+      <p-spinner [(ngModel)]="this.globals.project.DailyWorkHours" [min]="0" [max]="8" size="5" (onChange)="this.globals.updateProjectInfo()"></p-spinner>      
+      <span class="mr-2 mt-2 ml-2"> Horas semanales planificables</span>   
+      <input type="text" pInputText [value]="this.globals.projectSummary.WeeklyWorkHours" [disabled]="true" size="5"/>         
+      <span class="mr-2 mt-2 ml-2"> Horas mensuales planificables</span>   
+      <input type="text" pInputText [value]="this.globals.projectSummary.MonthlyWorkHours" [disabled]="true" size="5"/>         
+
+  </div>
+  <!--<table class="table">
+    <thead>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row" class="h6">Resumen</th>
+          <th scope="row" class="h6">Horas diarias</th>          
+          <td scope="row" class="h6"></td>                     
+          <th scope="row" class="h6">Horas semanales</th>          
+          <td scope="row" class="h6"><input type="text" pInputText [value]="this.globals.projectSummary.WeeklyWorkHours" [disabled]="true" size="5"/></td>                     
+          <th scope="row" class="h6">Horas mensuales</th>          
+          <td scope="row" class="h6"><input type="text"  pInputText [value]="this.globals.projectSummary.MonthlyWorkHours" [disabled]="true" size="5"/></td>                     
+        </tr>
+        <tr>
+          <th scope="row" class="h6">Mes actual</th>          
+          <th scope="row" class="h6">Tareas</th>
+          <td class="h6"><input type="text" pInputText [value]="this.globals.projectSummary.TotalTasksThisMonth" [disabled]="true" size="5"/></td>
+          <th class="h6">Horas planificadas</th>
+          <td class="h6"><input type="text" pInputText [value]="this.globals.projectSummary.TotalHoursThisMonth" [disabled]="true" size="5"/></td>
+          <td [ngStyle]="{'background-color': this.globals.projectSummary.PercePlannedHoursThisMonth> 100 ? 'orangered':'limegreen' }"><p-progressBar [value]="this.globals.projectSummary.PercePlannedHoursThisMonth"></p-progressBar></td>
+          <th class="h6"> % Progreso</th>
+          <td class="h6" ><p-progressBar [value]="this.globals.projectSummary.PerceProgressThisMonth"></p-progressBar></td>          
+        </tr>               
+        <tr>
+          <th scope="row" class="h6">Mes siguiente</th>          
+          <th scope="row" class="h6">Tareas</th>
+          <td class="h6"><input type="text" pInputText [value]="this.globals.projectSummary.TotalTasksNextMonth" [disabled]="true" size="5"/></td>
+          <th class="h6">Horas planificadas</th>
+          <td class="h6"><input type="text" pInputText [value]="this.globals.projectSummary.TotalHoursNextMonth" [disabled]="true" size="5"/></td>
+          <td [ngStyle]="{'background-color': this.globals.projectSummary.PercePlannedHoursNextMonth> 100 ? 'orangered':'limegreen' }"><p-progressBar [value]="this.globals.projectSummary.PercePlannedHoursNextMonth"></p-progressBar></td>          
+          <th class="h6"> % Progreso</th>
+          <td class="h6 col-sm-5" ><p-progressBar [value]="this.globals.projectSummary.PerceProgressNextMonth"></p-progressBar></td>          
+        </tr>       
+        <tr>
+          <th scope="row" class="h6">Global</th>          
+          <th scope="row" class="h6">Tareas</th>
+          <td class="h6"><input type="text" pInputText [value]="this.globals.projectSummary.TotalTasks" [disabled]="true" size="5"/></td>
+          <th class="h6">Horas planificadas</th>
+          <td class="h6"><input type="text" pInputText [value]="this.globals.projectSummary.TotalHoursPlanned" [disabled]="true" size="5"/></td>
+          <td></td>          
+          <th class="h6"> % Progreso</th>
+          <td class="h6"><p-progressBar [value]="this.globals.projectSummary.PerceGlobalProgress"></p-progressBar></td>          
+        </tr>                    
+      </tbody>
+  </table>-->
+
+
+  <p-table [value]="this.globals.projectSummary.ProjectSummaryMonths" >
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Mes</th>
+            <th class="text-right">Actividades planificadas</th>
+            <th class="text-right">Horas planificadas</th>
+            <th class="text-right">Horas planificables mensuales</th>          
+            <th class="text-right">Horas restantes mensuales</th>                      
+            <th class="text-right">Horas planificadas respecto al total mensual</th>
+            <th class="text-right">Progreso</th>          
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData>
+        <tr>
+            <td>{{rowData.MonthName}}</td>
+            <td class="text-right">{{rowData.TotalTasks}}</td>
+            <td class="text-right">{{rowData.TotalHoursPlanned}}</td>
+            <td class="text-right">{{rowData.TotalWorkHours}}</td>  
+            <td class="text-right">{{rowData.TotalRemainHours}}</td>                                  
+            <td [ngStyle]="{'background-color': rowData.PercePlanned> 100 ? 'orangered':'limegreen' }" ><p-progressBar value={{rowData.PercePlanned}}></p-progressBar></td>
+            <td ><p-progressBar value={{rowData.PerceProgress}}></p-progressBar></td>          
+        </tr>
+    </ng-template>
+  </p-table>
+</div>

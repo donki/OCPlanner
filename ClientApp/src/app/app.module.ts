@@ -5,7 +5,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { Configuration } from 'msal';
 import { MsalAngularConfiguration, MsalModule, MsalService, MSAL_CONFIG, MSAL_CONFIG_ANGULAR } from '@azure/msal-angular';
 import { AppComponent } from './app.component';
-import { GanttComponent } from './gantt/gantt.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProgressBarModule } from 'primeng/progressbar';
@@ -13,6 +12,28 @@ import { SpinnerModule } from 'primeng/spinner';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/components/common/messageservice';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { CalendarComponent } from './calendar/calendar.component';
+import { MenuModule } from 'primeng/menu'
+import { SummaryComponent } from './summary/summary.component';
+import { OptionsComponent } from './options/options.component';
+import { Globals } from './globals.service';
+import { CalendarCommonModule, CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { DatePipe, registerLocaleData } from '@angular/common';
+import { DialogModule } from 'primeng/dialog';
+import { CalendarModule as CalendarModulePrimeNG } from 'primeng/calendar';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { DropdownModule } from 'primeng/dropdown';
+import localeEs from '@angular/common/locales/es';
+import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
+import { CalendarDetailComponent } from './calendar/calendardetail/calendardetail.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+import { ChipsModule } from 'primeng/chips';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { CheckboxModule } from 'primeng/checkbox';
+import { TableModule } from 'primeng/table';
 
 
 export const protectedResourceMap: [string, string[]][] = [
@@ -38,6 +59,8 @@ export function MSALConfigFactory(): Configuration {
   };
 }
 
+registerLocaleData(localeEs);
+
 export function MSALAngularConfigFactory(): MsalAngularConfiguration {
   return {
     consentScopes: [
@@ -52,10 +75,24 @@ export function MSALAngularConfigFactory(): MsalAngularConfiguration {
 @NgModule({
   declarations: [
     AppComponent,
-    GanttComponent
+    CalendarComponent,
+    CalendarDetailComponent,
+    SummaryComponent,
+    OptionsComponent
     
   ],
   imports: [
+    TableModule,
+    TabMenuModule,
+    CheckboxModule,
+    NgxSpinnerModule,
+    ChipsModule,
+    ConfirmDialogModule,
+    DynamicDialogModule,
+    DropdownModule,
+    InputTextareaModule,
+    CalendarModulePrimeNG,
+    DialogModule,
     BrowserModule,
     HttpClientModule,
     AppRoutingModule, 
@@ -65,11 +102,17 @@ export function MSALAngularConfigFactory(): MsalAngularConfiguration {
     ProgressBarModule,
     SpinnerModule,
     InputTextModule,
-    ToastModule
-    
-    
+    ToastModule,
+    TabMenuModule,
+    MenuModule,
+    BrowserAnimationsModule,
+    CalendarCommonModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    })    
   ],
-  providers: [ MessageService,
+  providers: [ Globals, MessageService, ConfirmationService, DatePipe,
     {
       provide: MSAL_CONFIG,
       useFactory: MSALConfigFactory

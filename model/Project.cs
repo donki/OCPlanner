@@ -9,7 +9,9 @@ namespace OCPlanner
     {
         public string ProjectName;
         public int DailyWorkHours = 4;
-        public List<GanttTask> Tasks = new List<GanttTask>();
-        public List<GanttLink> Links = new List<GanttLink>();
+        public List<OCActivity> Activities = new List<OCActivity>();
+        public List<string> HolyDays = new List<string>();
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
     }
 }

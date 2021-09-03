@@ -1,3 +1,5 @@
+import { ProjectSummaryMonth } from "./ProjecSummaryMonth";
+
 export class ProjectSummary {
     DailyWorkHours = 0;
     PerceGlobalProgress = 0;
@@ -16,6 +18,6 @@ export class ProjectSummary {
     MonthlyWorkHours = 0;
     PercePlannedHoursThisMonth = 0;
     PercePlannedHoursNextMonth = 0;
-
-
+    PercePlannedRange = 0;
+    ProjectSummaryMonths : ProjectSummaryMonth[] = [];
 }

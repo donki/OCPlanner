@@ -1,0 +1,120 @@
+<div style="margin-top: 10px;">
+<div class="row text-center">
+    <div class="col-md-4">
+      <div class="btn-group">
+        <button
+          class="btn btn-primary"
+          (click)="NewActivity()">
+        Nueva actividad
+        </button>  
+      </div>  
+    </div>  
+    <div class="col-md-4">
+      <div class="btn-group">
+        <div
+          class="btn btn-primary"
+          mwlCalendarPreviousView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          [excludeDays]="excludeDays"
+        >
+          Anterior
+        </div>
+        <div
+          class="btn btn-outline-secondary"
+          mwlCalendarToday
+          [(viewDate)]="viewDate"
+        >
+          Hoy
+        </div>
+        <div
+          class="btn btn-primary"
+          mwlCalendarNextView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          [excludeDays]="excludeDays"
+        >
+          Siguiente
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <h3>
+        {{ viewDate | calendarDate:(view +
+        'ViewTitle'):'es':weekStartsOn:excludeDays }}
+      </h3>
+    </div>
+    <div class="col-md-4">
+      <div class="btn-group">
+        <div
+          class="btn btn-primary"
+          (click)="changeViewToMonth()"
+          [class.active]="view === 'month'"
+        >
+          Month
+        </div>
+        <div
+          class="btn btn-primary"
+          (click)="changeViewToWeek()"
+          [class.active]="view === 'week'"
+        >
+          Week
+        </div>
+        <div
+          class="btn btn-primary"
+          (click)="changeViewToDay()"
+          [class.active]="view === 'day'"
+        >
+          Day
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+
+<div [ngSwitch]="view">
+  <mwl-calendar-month-view
+    *ngSwitchCase="'month'"
+    [viewDate]="viewDate"
+    [events]="globals.events"
+    [activeDayIsOpen]="true"
+    (beforeViewRender)="beforeViewRender($event)"
+    (eventClicked)="eventClicked($event)"    
+    [locale]="locale"
+    [weekStartsOn]="weekStartsOn"
+    [weekendDays]="weekendDays" 
+    [excludeDays]="excludeDays"   
+    [activeDayIsOpen]="true"
+    (eventTimesChanged)="eventTimesChanged($event)"    
+  >
+  </mwl-calendar-month-view>
+  <mwl-calendar-week-view
+    *ngSwitchCase="'week'"
+    [viewDate]="viewDate"
+    [events]="globals.events"
+    (beforeViewRender)="beforeViewRender($event)"
+    (eventClicked)="eventClicked($event)"    
+    [locale]="locale"
+    [weekStartsOn]="weekStartsOn"
+    [weekendDays]="weekendDays"   
+    [excludeDays]="excludeDays" 
+    [dayStartHour]="9"
+    [dayEndHour]="18"   
+    (eventTimesChanged)="eventTimesChanged($event)"        
+  >
+  </mwl-calendar-week-view>
+  <mwl-calendar-day-view
+    *ngSwitchCase="'day'"
+    [viewDate]="viewDate"
+    [events]="globals.events"
+    (beforeViewRender)="beforeViewRender($event)"
+    (eventClicked)="eventClicked($event)"
+    [locale]="locale"  
+    [dayStartHour]="9"
+    [dayEndHour]="18"   
+    (eventTimesChanged)="eventTimesChanged($event)"    
+  >
+  </mwl-calendar-day-view>
+</div>
+</div>
+

@@ -10,6 +10,7 @@
 
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

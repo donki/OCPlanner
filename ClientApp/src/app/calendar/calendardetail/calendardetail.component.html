@@ -1,0 +1,55 @@
+  <div class="form-row mt-2">
+    <div class="form-group">
+        <label class="mr-1">Título *</label>
+        <input type="text" pInputText [(ngModel)]="activity.title" size=100 required/>
+    </div>
+    <div class="form-group">
+        <label class="mr-1 ml-1">Tipo *</label>
+        <p-dropdown [options]="activitytypes" [showClear]="true" placeholder="Seleccione tipo de actividad" [(ngModel)]="activity.activitytype" optionLabel="name" optionValue="code"></p-dropdown> 
+    </div>
+    <div class="form-group">
+      <label class="mr-1 ml-1">Periodo *</label>
+      <p-dropdown [options]="periods" [showClear]="true" placeholder="Seleccione el periodo" [(ngModel)]="activity.period" optionLabel="name" optionValue="code"></p-dropdown> 
+    </div>    
+  </div>  
+  <div class="form-row">
+    <div class="form-group">
+      <label class="mr-1">Fecha Inicio *</label>
+      <p-calendar [(ngModel)]="activity.start_date" dateFormat="dd/mm/yy" [showTime]="true" required></p-calendar> 
+    </div>  
+    <div class="form-group">
+      <label class="mr-1 ml-1" >Duración *</label>
+      <p-spinner [(ngModel)]="activity.duration" [min]="0" required></p-spinner> 
+    </div>
+    <div class="form-group">
+      <label class="mr-1 ml-1" >Fecha Final</label>
+      <p-calendar [(ngModel)]="activity.end_date" dateFormat="dd/mm/yy" [showTime]="true" required [disabled]="true"></p-calendar> 
+    </div>
+    <div class="form-group">
+      <label class="mr-1 ml-1" >Progreso</label>
+      <p-spinner [(ngModel)]="activity.progress" [min]="0" required></p-spinner> 
+    </div>    
+  </div>  
+  <div class="form-row">
+    <div class="form-group">
+      <label class="mr-1 align-text-top">Descripción</label>
+      <textarea pInputTextarea [(ngModel)]="activity.description" [rows]="10" [cols]="100"></textarea>
+    </div>
+  </div>    
+  <div class="form-row">    
+    <div class="form-group">
+      <label class="mr-1" >Referencia URL</label>
+      <input id="url" type="url" pInputText [(ngModel)]="activity.url" size=100>
+    </div>
+  </div>
+  <div class="form-row">    
+    <div class="form-group">
+      <label class="mr-1" >tags</label>
+      <p-chips [(ngModel)]="activity.tags" max=100 allowDuplicate=false></p-chips>
+    </div>
+  </div>   
+<button type="button" (click)="SaveActivity()" class="btn btn-primary mr-2">Aceptar</button>
+<button type="button" (click)="CloseActivityDetail()" class="btn btn-primary mr-2">Cancelar</button>     
+<button type="button" (click)="RemoveActivity()" class="btn btn-primary mr-2">Borrar</button>          
+
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

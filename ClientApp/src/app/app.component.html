@@ -1,14 +1,17 @@
+<ngx-spinner></ngx-spinner>
 <body [hidden]=!canShow>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">  
-      <a class="navbar-brand" href="#">
-          <img src="../assets/matraz75.png" class="img-fluid float-left" />
-      </a>
-      <a class="navbar-brand" href="#">
-         <p class="text-left h6">{{userName}}</p>
-      </a>      
+      <img src="../assets/matraz75.png" class="img-fluid float-left" />
+      <p class="">{{this.globals.project.ProjectName}}
+        <span class="badge rounded-pill badge-notification mr-2" title= "Mes actual" style="color: white;" [ngStyle]="{'background-color': this.globals.projectSummary.PercePlannedHoursThisMonth > 100 ? 'orangered':'limegreen' }">{{this.globals.projectSummary.PercePlannedHoursThisMonth}}%</span>
+        <span class="badge rounded-pill badge-notification mr-2" title= "Mes siguiente" style="color: white;" [ngStyle]="{'background-color': this.globals.projectSummary.PercePlannedHoursNextMonth> 100 ? 'orangered':'limegreen' }">{{this.globals.projectSummary.PercePlannedHoursNextMonth}}%</span>        
+        <span class="badge rounded-pill badge-notification" title= "Rango" style="color: white;" [ngStyle]="{'background-color': this.globals.projectSummary.PercePlannedRange> 100 ? 'orangered':'limegreen' }">{{this.globals.projectSummary.PercePlannedRange}}%</span>                
+      </p>
+      <p class="">{{userName}}</p>
     </div>
   </nav>
-<router-outlet></router-outlet>
+  <div  class="mt-2"> <p-tabMenu [model]="items"></p-tabMenu>   </div>  
+  <router-outlet></router-outlet>
 </body>
 

@@ -4,6 +4,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { MsalService } from '@azure/msal-angular';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MenuItem } from 'primeng/api';
+import { Globals } from './globals.service';
 
 @Component({
   selector: 'app-root',
@@ -23,31 +26,35 @@ export class AppComponent {
   HasRights = false;
   userName: string; 
   email: string;
+  items: MenuItem[];
 
   jwtHelper = new JwtHelperService();  
   
-  constructor(private http: HttpClient, private routeService: Router, private authService: MsalService, private _sanitizer: DomSanitizer) {
+  constructor(public globals:Globals,  private http: HttpClient, private routeService: Router,
+              private authService: MsalService, private _sanitizer: DomSanitizer, private spinner: NgxSpinnerService) {
     this.loggedIn = false;
     this.InitMSal();
   }
 
   ngOnInit() {
+    this.spinner.show();
     this.checkAccount();
-    this.GetRights();
+    this.GetRights();    
+    this.items = [
+            {label: 'Sumario', icon: 'pi pi-fw pi-book', routerLink: ['/summary']},
+            {label: 'Calendario', icon: 'pi pi-fw pi-calendar', routerLink: ['/calendar']},
+            {label: 'Opciones', icon: 'pi pi-fw pi-cog', routerLink: ['/options']}
+        ];      
   }   
-
-  private getHeaders():HttpHeaders 
-  {
-    let jwt = localStorage.getItem('msal.idtoken');
-    let headers = new HttpHeaders({ 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('msal.idtoken') });
-    return headers;
-  }
 
   private GetRights() {
 
-    this.http.get<any>('./api/Rights/GetRights/'+this.email, { headers: this.getHeaders() }).subscribe(result => {
+    this.http.get<any>('./api/Rights/GetRights/'+this.email, { headers: this.globals.getHeaders() }).subscribe(result => {
       this.HasRights = result;
-      this.canShow = true; //this.HasRights && this.loggedIn;
+      this.globals.PlanTabVisible = true;
+      setTimeout(() => {
+        this.spinner.hide();              
+      }, 1000);
     }, error => console.log(error));
 
   } 

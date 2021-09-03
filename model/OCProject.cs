@@ -5,15 +5,19 @@ using System.Threading.Tasks;
 
 namespace OCPlanner
 {
-    public class GanttProject
+    public class OCProject
     {
         public string ProjectName { get; set; }
         public int DailyWorkHours { get; set; }
-        
-        public GanttProject()
+        public List<string> HolyDays { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+
+        public OCProject()
         {
             ProjectName = "SIN TITULO";
             DailyWorkHours = 4;
+            HolyDays = new List<string>();
         }
     }
 }

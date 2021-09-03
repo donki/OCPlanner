@@ -24,7 +24,9 @@ namespace OCPlanner
         public int PerceProgressNextMonth = 0;
         public int PercePlannedHoursThisMonth = 0;
         public int PercePlannedHoursNextMonth = 0;
+        public int PercePlannedRange = 0;
+        public List<ProjectSummaryMonth> ProjectSummaryMonths = new List<ProjectSummaryMonth>();
 
-        
+
     }
 }

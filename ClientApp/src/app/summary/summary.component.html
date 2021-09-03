@@ -6,7 +6,7 @@
       <p-spinner class="mr-2" [(ngModel)]="this.globals.project.DailyFullWorkHours" [min]="0" [max]="8" size="2" (onChange)="this.globals.updateProjectInfo()"></p-spinner>         
       <span class="mr-2 mt-2 overflow-text new-line"> Horas diarias planificables</span>   
       <p-spinner class="mr-2" [(ngModel)]="this.globals.project.DailyPlannedWorkHours" [min]="0" [max]="8" size="2" (onChange)="this.globals.updateProjectInfo()"></p-spinner>  
-      <span class="mr-2 mt-2 overflow-text new-line"> % horas planificables</span>   
+      <span class="mr-2 mt-2 overflow-text new-line"> % horas planificadas</span>   
       <input type="text" class="mr-2" pInputText [value]="this.globals.project.PercePlannedHoursvsFullWorkHours" [disabled]="true" size="2" >  
       <span class="mr-2 mt-2 overflow-text new-line"> Horas semanales planificables</span>   
       <input type="text" class="mr-2" pInputText [value]="this.globals.projectSummary.WeeklyWorkHours" [disabled]="true" size="2"/>         

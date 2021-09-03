@@ -265,7 +265,11 @@ namespace OCPlanner.Controllers
                     if (tmp.idlinked.Count >= 1)
                     {
                         RemoveTask(tmp);
+                        tmp = RecalcDates(tmp);
                         InsertTask(tmp);
+                    } else
+                    {
+                        tmp = RecalcDates(tmp);
                     }
                     SaveProject();
                 }

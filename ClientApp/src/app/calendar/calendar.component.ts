@@ -4,7 +4,7 @@ import { ChangeDetectorRef, Component, OnInit,  ViewEncapsulation } from '@angul
 import { Router } from '@angular/router';
 import { CalendarDayViewBeforeRenderEvent, CalendarEvent, CalendarEventTimesChangedEvent, CalendarMonthViewBeforeRenderEvent, CalendarView, CalendarViewPeriod, CalendarWeekViewBeforeRenderEvent, DAYS_OF_WEEK } from 'angular-calendar';
 import { Globals } from '../globals.service';
-import { OCActivity } from '../models/OCActivity';
+
 
 
 @Component({
@@ -38,7 +38,6 @@ export class CalendarComponent implements OnInit {
       | CalendarDayViewBeforeRenderEvent
   ) {
     this.period = event.period;
-    this.cdr.detectChanges();
   }
    
   ngOnInit() {       

@@ -1,20 +1,25 @@
 
 <div [hidden]=!this.globals.PlanTabVisible>
-  <div class="d-flex justify-content-center mt-2 mb-2"><input type="text" pInputText [(ngModel)]="this.globals.project.ProjectName" (change)="this.globals.updateProjectInfo()" size="100"/></div>  
+  <div class="d-flex justify-content-center mt-2 mb-2"><input type="text" class="title-width" pInputText [(ngModel)]="this.globals.project.ProjectName" (change)="this.globals.updateProjectInfo()" size="100"/></div>  
   <div class="d-flex justify-content-center mt-2 mb-2">
-      <span class="mr-2 mt-2 ml-2"> Inicio</span>
-      <p-calendar [(ngModel)]="this.globals.project.StartDate" dateFormat="dd/mm/yy"  required></p-calendar>
-      <span class="mr-2 mt-2 ml-2"> Final</span>      
-      <p-calendar [(ngModel)]="this.globals.project.EndDate" dateFormat="dd/mm/yy"  required></p-calendar>
-      <button pButton class="mr-2 ml-2" type="button" label="Refrescar" (click)="this.updateProjectInfo()"></button>
-      <span class="mr-2 mt-2 ml-2"> Horas diarias planificables</span>   
-      <p-spinner [(ngModel)]="this.globals.project.DailyWorkHours" [min]="0" [max]="8" size="5" (onChange)="this.globals.updateProjectInfo()"></p-spinner>      
-      <span class="mr-2 mt-2 ml-2"> Horas semanales planificables</span>   
-      <input type="text" pInputText [value]="this.globals.projectSummary.WeeklyWorkHours" [disabled]="true" size="5"/>         
-      <span class="mr-2 mt-2 ml-2"> Horas mensuales planificables</span>   
-      <input type="text" pInputText [value]="this.globals.projectSummary.MonthlyWorkHours" [disabled]="true" size="5"/>         
-
-  </div>
+      <span class="mr-2 mt-2 overflow-text new-line"> Horas diarias laborales</span>   
+      <p-spinner class="mr-2" [(ngModel)]="this.globals.project.DailyFullWorkHours" [min]="0" [max]="8" size="2" (onChange)="this.globals.updateProjectInfo()"></p-spinner>         
+      <span class="mr-2 mt-2 overflow-text new-line"> Horas diarias planificables</span>   
+      <p-spinner class="mr-2" [(ngModel)]="this.globals.project.DailyPlannedWorkHours" [min]="0" [max]="8" size="2" (onChange)="this.globals.updateProjectInfo()"></p-spinner>  
+      <span class="mr-2 mt-2 overflow-text new-line"> % horas planificables</span>   
+      <input type="text" class="mr-2" pInputText [value]="this.globals.project.PercePlannedHoursvsFullWorkHours" [disabled]="true" size="2" >  
+      <span class="mr-2 mt-2 overflow-text new-line"> Horas semanales planificables</span>   
+      <input type="text" class="mr-2" pInputText [value]="this.globals.projectSummary.WeeklyWorkHours" [disabled]="true" size="2"/>         
+      <span class="mr-2 mt-2 overflow-text new-line"> Horas mensuales planificables</span>   
+      <input type="text" pInputText [value]="this.globals.projectSummary.MonthlyWorkHours" [disabled]="true" size="2"/>    
+  </div>        
+  <div class="d-flex justify-content-center mt-2 mb-2">          
+      <span class="mr-2 mt-2 new-line"> Inicio</span>
+      <p-calendar class="mr-2" [(ngModel)]="this.globals.project.StartDate" dateFormat="dd/mm/yy" required></p-calendar>
+      <span class="mr-2 mt-2 new-line"> Final</span>      
+      <p-calendar class="mr-2" [(ngModel)]="this.globals.project.EndDate" dateFormat="dd/mm/yy" required></p-calendar>
+      <button pButton type="button" label="Refrescar" (click)="this.updateProjectInfo()"></button>
+  </div>  
   <!--<table class="table">
     <thead>
       </thead>
@@ -62,28 +67,30 @@
   </table>-->
 
 
-  <p-table [value]="this.globals.projectSummary.ProjectSummaryMonths" >
-    <ng-template pTemplate="header">
-        <tr>
-            <th>Mes</th>
-            <th class="text-right">Actividades planificadas</th>
-            <th class="text-right">Horas planificadas</th>
-            <th class="text-right">Horas planificables mensuales</th>          
-            <th class="text-right">Horas restantes mensuales</th>                      
-            <th class="text-right">Horas planificadas respecto al total mensual</th>
-            <th class="text-right">Progreso</th>          
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowData>
-        <tr>
-            <td>{{rowData.MonthName}}</td>
-            <td class="text-right">{{rowData.TotalTasks}}</td>
-            <td class="text-right">{{rowData.TotalHoursPlanned}}</td>
-            <td class="text-right">{{rowData.TotalWorkHours}}</td>  
-            <td class="text-right">{{rowData.TotalRemainHours}}</td>                                  
-            <td [ngStyle]="{'background-color': rowData.PercePlanned> 100 ? 'orangered':'limegreen' }" ><p-progressBar value={{rowData.PercePlanned}}></p-progressBar></td>
-            <td ><p-progressBar value={{rowData.PerceProgress}}></p-progressBar></td>          
-        </tr>
-    </ng-template>
-  </p-table>
+  <div class="mt-2">
+  <p-table [value]="this.globals.projectSummary.ProjectSummaryMonths">
+      <ng-template pTemplate="header" >
+          <tr>
+              <th>Mes</th>
+              <th class=" hidden-on-mobile">Actividades planificadas</th>
+              <th class="overflow-text">Horas planificadas</th>
+              <th class="overflow-text hidden-on-mobile">Horas planificables mensuales</th>          
+              <th class="overflow-text">Horas restantes mensuales</th>                      
+              <th class="overflow-text">Horas planificadas respecto al total mensual</th>
+              <th class="text-right hidden-on-mobile">Progreso</th>          
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData>
+          <tr>
+              <td>{{rowData.MonthName}}</td>
+              <td class="text-right hidden-on-mobile">{{rowData.TotalTasks}}</td>
+              <td class="text-right">{{rowData.TotalHoursPlanned}}</td>
+              <td class="text-right hidden-on-mobile">{{rowData.TotalWorkHours}}</td>  
+              <td class="text-right">{{rowData.TotalRemainHours}}</td>                                  
+              <td [ngStyle]="{'background-color': rowData.PercePlanned> 100 ? 'orangered':'limegreen' }" ><p-progressBar value={{rowData.PercePlanned}}></p-progressBar></td>
+              <td class="text-right hidden-on-mobile"><p-progressBar value={{rowData.PerceProgress}}></p-progressBar></td>          
+          </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>

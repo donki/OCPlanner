@@ -62,7 +62,8 @@ namespace OCPlanner.Controllers
         {
             lock (lockSaveProject)
             {
-                project.DailyWorkHours = pganttProject.DailyWorkHours;
+                project.DailyPlannedWorkHours = pganttProject.DailyPlannedWorkHours;
+                project.DailyFullWorkHours = pganttProject.DailyFullWorkHours;
                 project.ProjectName = pganttProject.ProjectName;
                 project.HolyDays = pganttProject.HolyDays;
                 project.StartDate = pganttProject.StartDate;
@@ -77,7 +78,12 @@ namespace OCPlanner.Controllers
         public ObjectResult GetProject()
         {
             var ganttProject = new OCProject();
-            ganttProject.DailyWorkHours = project.DailyWorkHours;
+            ganttProject.DailyPlannedWorkHours = project.DailyPlannedWorkHours;
+            ganttProject.DailyFullWorkHours = project.DailyFullWorkHours;
+            if (project.DailyFullWorkHours>0)
+            {
+                ganttProject.PercePlannedHoursvsFullWorkHours = (project.DailyPlannedWorkHours * 100) / project.DailyFullWorkHours;
+            }
             ganttProject.ProjectName = project.ProjectName;
             ganttProject.HolyDays = project.HolyDays;
             ganttProject.StartDate = project.StartDate;
@@ -126,7 +132,7 @@ namespace OCPlanner.Controllers
                     }
                 }
 
-                pSummary.DailyWorkHours = project.DailyWorkHours;
+                pSummary.DailyWorkHours = project.DailyPlannedWorkHours;
                 pSummary.WeeklyWorkHours = pSummary.DailyWorkHours * 5;
                 pSummary.MonthlyWorkHours = pSummary.DailyWorkHours * 20;
 
@@ -134,7 +140,7 @@ namespace OCPlanner.Controllers
                 {
                     var getFreeDays = getFreeDaysBetweenDates(psm.BeginOfMonth, psm.EndOfMonth);
 
-                    psm.TotalWorkHours = pSummary.MonthlyWorkHours - (getFreeDays * project.DailyWorkHours);
+                    psm.TotalWorkHours = pSummary.MonthlyWorkHours - (getFreeDays * project.DailyPlannedWorkHours);
 
                     if (psm.TotalHoursPlanned > 0)
                     {
@@ -143,7 +149,7 @@ namespace OCPlanner.Controllers
                     
                     if (pSummary.MonthlyWorkHours > 0)
                     {
-                        psm.PercePlanned = (psm.TotalHoursPlanned * 100) / (pSummary.MonthlyWorkHours - (getFreeDays * project.DailyWorkHours));
+                        psm.PercePlanned = (psm.TotalHoursPlanned * 100) / (pSummary.MonthlyWorkHours - (getFreeDays * project.DailyPlannedWorkHours));
                     }
 
                     psm.TotalRemainHours = psm.TotalWorkHours - psm.TotalHoursPlanned;
@@ -429,7 +435,7 @@ namespace OCPlanner.Controllers
                 }
             }
 
-            if (CalcDayOcupation(realStartDate) >= project.DailyWorkHours)
+            if (CalcDayOcupation(realStartDate) >= project.DailyFullWorkHours)
             {
                 task.start_date = realStartDate.AddDays(1).ToString("yyyy-MM-dd HH:mm");
                 realStartDate = CalcRealStartDate(task);
@@ -455,30 +461,30 @@ namespace OCPlanner.Controllers
         
         private OCActivity SplitByMaxDayHours(OCActivity task)
         {
-            if (Convert.ToInt16(task.duration) > project.DailyWorkHours)
+            if (Convert.ToInt16(task.duration) > project.DailyPlannedWorkHours)
             {
                 var FullDuration = Convert.ToInt32(task.duration);
-                var TasksPerDuration = FullDuration / project.DailyWorkHours;
+                var TasksPerDuration = FullDuration / project.DailyPlannedWorkHours;
 
-                if ((FullDuration % project.DailyWorkHours)>0)
+                if ((FullDuration % project.DailyPlannedWorkHours) >0)
                 {
                     TasksPerDuration++;
                 }
 
                 task.start_date = Convert.ToDateTime(task.start_date).Date.AddHours(9).ToString("yyyy-MM-dd HH:mm");
-                task.duration = project.DailyWorkHours.ToString();
+                task.duration = project.DailyFullWorkHours.ToString();
                 RecalcDates(task);
-                FullDuration = FullDuration - project.DailyWorkHours;
+                FullDuration = FullDuration - project.DailyPlannedWorkHours;
 
                 for (int i = 1; i < TasksPerDuration; i++)
                 {
                     var tmp = CopyTask(task);
                     tmp.start_date = Convert.ToDateTime(task.start_date).Date.AddDays(i).AddHours(9).ToString("yyyy-MM-dd HH:mm");
                     tmp = RecalcDates(tmp);
-                    if ((FullDuration - project.DailyWorkHours) >0)
+                    if ((FullDuration - project.DailyPlannedWorkHours) >0)
                     {
-                        tmp.duration = project.DailyWorkHours.ToString();
-                        FullDuration = FullDuration - project.DailyWorkHours;
+                        tmp.duration = project.DailyPlannedWorkHours.ToString();
+                        FullDuration = FullDuration - project.DailyPlannedWorkHours;
 
                     } else
                     {

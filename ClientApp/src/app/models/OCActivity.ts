@@ -8,7 +8,7 @@ export class OCActivity {
 	end_date: any;
 	url: string;
 	activitytype: any;
-	skateholder: string[];
+	tags: string[];
 	period: any;
 	idlinked: string[];
 }

@@ -41,7 +41,8 @@ export class Globals {
  
   updateProjectInfo() {
     let tmp = new OCProject();
-    tmp.DailyWorkHours = this.project.DailyWorkHours;
+    tmp.DailyPlannedWorkHours = this.project.DailyPlannedWorkHours;
+    tmp.DailyFullWorkHours = this.project.DailyFullWorkHours;    
     tmp.ProjectName = this.project.ProjectName;
     tmp.HolyDays = this.project.HolyDays;
     tmp.StartDate = this.datepipe.transform(this.project.StartDate, 'yyyy-MM-dd HH:mm');

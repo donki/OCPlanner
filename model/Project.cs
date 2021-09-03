@@ -8,7 +8,8 @@ namespace OCPlanner
     public class Project
     {
         public string ProjectName;
-        public int DailyWorkHours = 4;
+        public int DailyPlannedWorkHours = 4;
+        public int DailyFullWorkHours = 8;
         public List<OCActivity> Activities = new List<OCActivity>();
         public List<string> HolyDays = new List<string>();
         public string StartDate { get; set; }

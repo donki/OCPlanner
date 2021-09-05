@@ -5,3 +5,7 @@ OCPlanner is a web application for Desktop and Mobile that it can help you to or
 You can get the full code, modify, run or use commercially (if you want) with no royalties. You need an IIS, Azure App Service to deploy or you can deploy standalone.
 
 Enjoy it.
+
+<h1>Next Improvements</h1>
+Test Outlook Integration via Microsoft Flow.
+Tag Statisticals

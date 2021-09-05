@@ -7,5 +7,7 @@ You can get the full code, modify, run or use commercially (if you want) with no
 Enjoy it.
 
 <h1>Next Improvements</h1>
-Test Outlook Integration via Microsoft Flow.
-Tag Statisticals
+<ul>
+  <li>Test Outlook Integration via Microsoft Flow.</li>
+  <li>Tag Statisticals</li>  
+</ul>

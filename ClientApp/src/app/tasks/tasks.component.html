@@ -1,0 +1,19 @@
+<div class="d-flex justify-content-center mt-2 mb-2"><i class="pi pi-cog mr-2"></i>Tareas no planificadas</div>
+<div class="btn-group new-line">
+    <button class="mb-2" icon="pi pi-plus" pButton (click)="NewActivity()"> </button> 
+</div> 
+<p-dataView [value]="this.globals.NonPlannedTask" [paginator]="true" [rows]="10">
+    <ng-template let-task pTemplate="listItem">
+        <div class="mt-2 mb-2">          
+            <span class="mr-2 mt-2 new-line"> Título</span>      
+            <input type="text" label="Aplicar" [value]="task.title" [disabled]="true"/>
+            <span class="mr-2 mt-2 new-line"> Duración</span>      
+            <input type="text" label="Aplicar" [value]="task.duration" [disabled]="true"/>
+            <span class="mr-2 mt-2 new-line"> Inicio</span>      
+            <input type="text" label="Aplicar" [value]="task.start_date" [disabled]="true"/>
+            <span class="mr-2 mt-2 new-line"> Final</span>      
+            <input type="text" label="Aplicar" [value]="task.end_date" [disabled]="true"/>
+            <button class="ml-2" icon="pi pi-pencil" pButton (click)="EditTask(task.id)"> </button>             
+        </div>         
+    </ng-template>
+</p-dataView>

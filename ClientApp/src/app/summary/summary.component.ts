@@ -20,18 +20,19 @@ export class SummaryComponent implements OnInit {
 
   
   ngOnInit() {
-	  this.getProjectInfo();
+    this.globals.getProjectSummary();
+    this.globals.getProjectInfo();
   }
 
-  getProjectInfo() {
+  /*getProjectInfo() {
     this.globals.getProjectSummary();
     this.globals.getProjectInfo();
   }
 
   updateProjectInfo(){
-    this.globals.updateProjectInfo();
-    this.globals.getProjectSummary();
+   this.globals.updateProjectInfo();
+   this.globals.getProjectSummary();
     this.globals.getProjectInfo();
-  }
+  }*/
 
 }

@@ -12,9 +12,9 @@
     </div>
   </nav>
   <div  class="mt-2"> 
-    <p-tabMenu class="hidden-on-mobile" [model]="items"></p-tabMenu>   
+    <!--<p-tabMenu class="hidden-on-mobile" [model]="items"></p-tabMenu>-->
     <p-menu #menu [popup]="true" [model]="items"></p-menu>
-    <button class="visible-on-mobile mb-2" type="button" pButton label="Menu" (click)="menu.toggle($event)"></button>    
+    <button class="mb-2" type="button" icon="pi pi-list" pButton (click)="menu.toggle($event)"></button>
   </div>  
   <router-outlet></router-outlet>
 </body>

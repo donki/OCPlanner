@@ -27,6 +27,7 @@ export class AppComponent {
   userName: string; 
   email: string;
   items: MenuItem[];
+  home: MenuItem;
 
   jwtHelper = new JwtHelperService();  
   
@@ -41,10 +42,11 @@ export class AppComponent {
     this.checkAccount();
     this.GetRights();    
     this.items = [
-            {label: 'Sumario', icon: 'pi pi-fw pi-book', routerLink: ['/summary']},
+            {label: 'Análisis', icon: 'pi pi-fw pi-book', routerLink: ['/summary']},
             {label: 'Calendario', icon: 'pi pi-fw pi-calendar', routerLink: ['/calendar']},
+            {label: 'Tareas no planificadas', icon: 'pi pi-fw pi-folder', routerLink: ['/tasks']},            
             {label: 'Opciones', icon: 'pi pi-fw pi-cog', routerLink: ['/options']}
-        ];      
+        ];            
   }   
 
   private GetRights() {

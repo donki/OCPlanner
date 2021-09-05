@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using RestSharp;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OCPlanner.Controllers
@@ -52,8 +54,41 @@ namespace OCPlanner.Controllers
             {
                 var tmp = JsonConvert.SerializeObject(project);
                 System.IO.File.WriteAllText(projectfile, tmp);
+                Task.Run(() => CallWebHook(tmp));
 
             }
+        }
+
+        public void CallWebHook(String Json)
+        {
+            var client = new RestClient(project.WebHook);
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("APIKEY", project.APIKey);
+            request.AddHeader("accept", "application/json");
+            request.AddParameter("application/json; charset=utf-8", Json, ParameterType.RequestBody);
+            request.RequestFormat = DataFormat.Json;
+
+            Object lockObject = new object();
+            lock (lockObject)
+            {
+                IRestResponse response = client.Execute(request);
+                if (response.StatusCode == 0)
+                {
+                    Thread.Sleep(1000);
+                    response = client.Execute(request);
+                }
+                if ((response.StatusCode != System.Net.HttpStatusCode.OK) &&
+                    (response.StatusCode != System.Net.HttpStatusCode.Accepted) &&
+                    (response.StatusCode != System.Net.HttpStatusCode.Created))
+                {
+                    if (response.StatusCode != System.Net.HttpStatusCode.NoContent)
+                    {
+                        //throw new Exception("Response Error: " + response.Content + "\n\rRequest Object:\n\r" + Json + "\n\r StatusCode " + response.StatusCode.ToString());
+                    }
+                }
+
+            }
+
         }
 
         [HttpPost]
@@ -68,6 +103,8 @@ namespace OCPlanner.Controllers
                 project.HolyDays = pganttProject.HolyDays;
                 project.StartDate = pganttProject.StartDate;
                 project.EndDate = pganttProject.EndDate;
+                project.WebHook = pganttProject.WebHook;
+                project.APIKey = pganttProject.APIKey;
                 SaveProject();
             }
             return Ok(JsonConvert.SerializeObject(pganttProject));
@@ -88,7 +125,27 @@ namespace OCPlanner.Controllers
             ganttProject.HolyDays = project.HolyDays;
             ganttProject.StartDate = project.StartDate;
             ganttProject.EndDate = project.EndDate;
+            ganttProject.WebHook = project.WebHook;
+            if (project.APIKey == null)
+            {
+                var appSettings = HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+                var GenerateSaaSInvoiceAPIKey = appSettings.GetValue<string>("GenerateSaaSInvoiceAPIKey");
+                project.APIKey = GenerateSaaSInvoiceAPIKey;
+            }
+            ganttProject.APIKey = project.APIKey;
             return Ok(JsonConvert.SerializeObject(ganttProject));
+        }
+
+        [HttpGet]
+        [Route("external/Project")]
+        public ObjectResult GetFullProject()
+        {
+            string APIKey = Request.Query["APIKey"];
+            if ((!project.APIKey.Equals(APIKey)))
+            {
+                return new UnauthorizedObjectResult("");
+            }
+            return Ok(JsonConvert.SerializeObject(project));
         }
 
         [HttpGet]
@@ -111,26 +168,38 @@ namespace OCPlanner.Controllers
                 {
                     var MonthName = Convert.ToDateTime(t.start_date).ToString("MM/yyyy");
                     var Month = pSummary.ProjectSummaryMonths.Find((x) => x.MonthName.Equals(MonthName));
-                    if (Month == null)
+                    if (t.planned)
                     {
-                        Month = new ProjectSummaryMonth();
-                        Month.MonthName = MonthName;
-                        pSummary.ProjectSummaryMonths.Add(Month);
-                        Month.BeginOfMonth = new DateTime(Convert.ToDateTime(t.start_date).Date.Year, Convert.ToDateTime(t.start_date).Date.Month, 1);
-                        Month.EndOfMonth = new DateTime(Convert.ToDateTime(t.start_date).Date.Year, Convert.ToDateTime(t.start_date).Date.Month, 1).AddMonths(1).AddDays(-1);
-                    }
+                        if (Month == null)
+                        {
+                            Month = new ProjectSummaryMonth();
+                            Month.MonthName = MonthName;
+                            pSummary.ProjectSummaryMonths.Add(Month);
+                            Month.BeginOfMonth = new DateTime(Convert.ToDateTime(t.start_date).Date.Year, Convert.ToDateTime(t.start_date).Date.Month, 1);
+                            Month.EndOfMonth = new DateTime(Convert.ToDateTime(t.start_date).Date.Year, Convert.ToDateTime(t.start_date).Date.Month, 1).AddMonths(1).AddDays(-1);
+                        }
 
-                    Month.TotalTasks++;
-                    Month.TotalProgress += Convert.ToInt32(Convert.ToDecimal(t.progress.Replace('.', ',')) * 100);
-                    Month.TotalHoursPlanned += Convert.ToInt32(t.duration);
-                    if ((Convert.ToDateTime(project.StartDate).Date <= Convert.ToDateTime(t.start_date).Date) &&
-                        (Convert.ToDateTime(project.EndDate).Date >= Convert.ToDateTime(t.start_date).Date))
+                        Month.TotalTasks++;
+                        Month.TotalProgress += Convert.ToInt32(Convert.ToDecimal(t.progress.Replace('.', ',')) * 100);
+                        Month.TotalHoursPlanned += Convert.ToInt32(t.duration);
+                        if ((Convert.ToDateTime(project.StartDate).Date <= Convert.ToDateTime(t.start_date).Date) &&
+                            (Convert.ToDateTime(project.EndDate).Date >= Convert.ToDateTime(t.start_date).Date))
+                        {
+                            MonthPerido.TotalTasks++;
+                            MonthPerido.TotalProgress += Convert.ToInt32(Convert.ToDecimal(t.progress.Replace('.', ',')) * 100);
+                            MonthPerido.TotalHoursPlanned += Convert.ToInt32(t.duration);
+                        }
+                    } else
                     {
-                        MonthPerido.TotalTasks++;
-                        MonthPerido.TotalProgress += Convert.ToInt32(Convert.ToDecimal(t.progress.Replace('.', ',')) * 100);
-                        MonthPerido.TotalHoursPlanned += Convert.ToInt32(t.duration);
+                        Month.TotalNonPlannedHours += Convert.ToInt32(t.duration);
+                        if ((Convert.ToDateTime(project.StartDate).Date <= Convert.ToDateTime(t.start_date).Date) &&
+                            (Convert.ToDateTime(project.EndDate).Date >= Convert.ToDateTime(t.start_date).Date))
+                        {
+                            MonthPerido.TotalNonPlannedHours += Convert.ToInt32(t.duration);
+                        }
+
                     }
-                }
+                } 
 
                 pSummary.DailyWorkHours = project.DailyPlannedWorkHours;
                 pSummary.WeeklyWorkHours = pSummary.DailyWorkHours * 5;
@@ -138,9 +207,12 @@ namespace OCPlanner.Controllers
 
                 foreach(ProjectSummaryMonth psm in pSummary.ProjectSummaryMonths)
                 {
-                    var getFreeDays = getFreeDaysBetweenDates(psm.BeginOfMonth, psm.EndOfMonth);
+                    var getFreeDays = getFreeDaysBetweenDates(psm.BeginOfMonth, psm.EndOfMonth) + countWeekEndDaysBetweenDates(psm.BeginOfMonth, psm.EndOfMonth);
 
-                    psm.TotalWorkHours = pSummary.MonthlyWorkHours - (getFreeDays * project.DailyPlannedWorkHours);
+                    var getWorkDays = (int)(psm.EndOfMonth - psm.BeginOfMonth).TotalDays;
+
+
+                    psm.TotalWorkHours = (Convert.ToInt32(getWorkDays) - getFreeDays) * project.DailyPlannedWorkHours;
 
                     if (psm.TotalHoursPlanned > 0)
                     {
@@ -149,26 +221,45 @@ namespace OCPlanner.Controllers
                     
                     if (pSummary.MonthlyWorkHours > 0)
                     {
-                        psm.PercePlanned = (psm.TotalHoursPlanned * 100) / (pSummary.MonthlyWorkHours - (getFreeDays * project.DailyPlannedWorkHours));
+                        psm.PercePlanned = (psm.TotalHoursPlanned * 100) / psm.TotalWorkHours;
+                        if (psm.isMonthPeriod)
+                        {
+                            pSummary.PercePlannedRange = psm.PercePlanned;
+                        }
                     }
 
                     psm.TotalRemainHours = psm.TotalWorkHours - psm.TotalHoursPlanned;
-                }
-
-                if (pSummary.ProjectSummaryMonths.Count >= 1)
-                {
-                    pSummary.PercePlannedHoursThisMonth = pSummary.ProjectSummaryMonths[0].PercePlanned;
+                    psm.PerceNonPlannedHours = (psm.TotalNonPlannedHours * 100) / ((getWorkDays) *(project.DailyFullWorkHours - pSummary.DailyWorkHours));
                 }
 
                 if (pSummary.ProjectSummaryMonths.Count >= 2)
                 {
-                    pSummary.PercePlannedHoursNextMonth = pSummary.ProjectSummaryMonths[1].PercePlanned;
+                    pSummary.PercePlannedHoursThisMonth = pSummary.ProjectSummaryMonths[1].PercePlanned;
                 }
 
-                pSummary.PercePlannedRange = MonthPerido.PercePlanned;
+                if (pSummary.ProjectSummaryMonths.Count >= 3)
+                {
+                    pSummary.PercePlannedHoursNextMonth = pSummary.ProjectSummaryMonths[2].PercePlanned;
+                }
+
+
 
                 return Ok(JsonConvert.SerializeObject(pSummary));
             }
+        }
+
+        private int countWeekEndDaysBetweenDates(DateTime start, DateTime stop)
+        {
+            int days = 0;
+            while (start <= stop)
+            {
+                if (start.DayOfWeek == DayOfWeek.Saturday || start.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    ++days;
+                }
+                start = start.AddDays(1);
+            }
+            return days;
         }
 
         private int getFreeDaysBetweenDates(DateTime startDate, DateTime endDate)
@@ -251,11 +342,26 @@ namespace OCPlanner.Controllers
             SaveProject();
         }
 
+        [HttpPatch("external/Activities/{id}")]
+        public ObjectResult UpdateTaskexternal(string id, [FromBody] OCActivity task)
+        {
+            string APIKey = Request.Query["APIKey"];
+            if ((!project.APIKey.Equals(APIKey)))
+            {
+                return new UnauthorizedObjectResult("");
+            }
+            return InternalUpdateTask(task);
+        }
 
         [HttpPut("Activities/{id}")]
         public ObjectResult UpdateTask(string id, [FromBody] OCActivity task)
         {
+            return InternalUpdateTask(task);
 
+        }
+
+        private ObjectResult InternalUpdateTask(OCActivity task)
+        {
             var tmp = project.Activities.Find(x => x.id.Equals(task.id));
             if (tmp != null)
             {
@@ -267,7 +373,8 @@ namespace OCPlanner.Controllers
                         RemoveTask(tmp);
                         tmp = RecalcDates(tmp);
                         InsertTask(tmp);
-                    } else
+                    }
+                    else
                     {
                         tmp = RecalcDates(tmp);
                     }
@@ -275,7 +382,6 @@ namespace OCPlanner.Controllers
                 }
             }
             return Ok(JsonConvert.SerializeObject(task));
-
         }
 
         private OCActivity CopyTask(OCActivity sourcetask, OCActivity destinationtask, bool CopyGuid = false, bool CopyIdLinked = false)
@@ -302,6 +408,7 @@ namespace OCPlanner.Controllers
             destinationtask.duration = sourcetask.duration;
             destinationtask.activitytype = sourcetask.activitytype;
             destinationtask.period = sourcetask.period;
+            destinationtask.planned = sourcetask.planned;
             if (CopyIdLinked)
             {
                 destinationtask.idlinked = sourcetask.idlinked;

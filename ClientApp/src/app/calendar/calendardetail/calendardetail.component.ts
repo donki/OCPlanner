@@ -20,6 +20,7 @@ export class CalendarDetailComponent implements OnInit {
     
     activity:OCActivity = new OCActivity();
     editing: boolean = false;
+    returnroute:string = 'calendar';
 
     constructor( private route: ActivatedRoute, private routeService: Router, 
                  private confirmationService: ConfirmationService, private globals:Globals, 
@@ -42,30 +43,40 @@ export class CalendarDetailComponent implements OnInit {
         ];
       
         let taskid = this.route.snapshot.paramMap.get('id');
+        this.activity.planned = true;
         if (taskid != undefined) {
-            this.editing = true;
-            this.http.get('api/Planner/Activities/'+taskid,{ headers: this.globals.getHeaders() }).subscribe(
-                (data:any)=> { 
-                    this.activity = JSON.parse(data);
-                    this.activity.start_date = new Date(this.activity.start_date);
-                    this.activity.end_date = new Date(this.activity.end_date);                    
-                    this.activitytypes.forEach((type) => {
-                        if (this.activity.activitytype == type.code ) {
-                            this.activity.activitytype = type;
-                        }
-                      });  
-                    this.periods.forEach((type) => {
-                        if (this.activity.period == type.code ) {
-                            this.activity.period = type;
-                        }
-                      });                                             
-                    });
-        }            
-            
+            if(taskid.includes('nonplanned'))
+            {
+                this.activity.planned = false;
+                this.returnroute = 'tasks';
+                taskid = taskid.replace('nonplanned','');
+            }
+            if(taskid.length > 0) 
+            {
+                this.editing = true;
+                this.http.get('api/Planner/Activities/'+taskid,{ headers: this.globals.getHeaders() }).subscribe(
+                    (data:any)=> { 
+                        this.activity = JSON.parse(data);
+                        this.activity.start_date = new Date(this.activity.start_date);
+                        this.activity.end_date = new Date(this.activity.end_date);                    
+                        this.activitytypes.forEach((type) => {
+                            if (this.activity.activitytype == type.code ) {
+                                this.activity.activitytype = type;
+                            }
+                          });  
+                          this.periods.forEach((type) => {
+                            if (this.activity.period == type.code ) {
+                                this.activity.period = type;
+                            }
+                          });                                             
+                        });
+    
+            } 
+        }    
     }
 
     CloseActivityDetail(){
-        this.routeService.navigateByUrl('/calendar');
+        this.routeService.navigateByUrl('/'+this.returnroute);
     }
 
     SaveActivity(){
@@ -95,18 +106,17 @@ export class CalendarDetailComponent implements OnInit {
             }
             this.activity.progress = this.activity.progress.toString();    
             if (!this.editing) {
-                this.globals.insertTask(this.activity);
+                this.globals.insertTask(this.activity).add(()=>this.routeService.navigateByUrl('/'+this.returnroute));
             } else {
-                this.globals.updateTask(this.activity);                
+                this.globals.updateTask(this.activity).add(()=>this.routeService.navigateByUrl('/'+this.returnroute));
             }
-            this.routeService.navigateByUrl('/calendar');
+            
         }
 
 
     }
 
     RemoveActivity() {
-        this.globals.deleteTask(this.activity);  
-        this.routeService.navigateByUrl('/calendar');
+        this.globals.deleteTask(this.activity).add(()=>this.routeService.navigateByUrl('/'+this.returnroute)); 
     }
 }

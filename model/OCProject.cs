@@ -14,6 +14,8 @@ namespace OCPlanner
         public List<string> HolyDays { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
+        public string WebHook { get; set; }
+        public string APIKey { get; set; }
 
         public OCProject()
         {

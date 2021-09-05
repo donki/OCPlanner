@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Injectable } from '@angular/core';
+import { ThrowStmt } from '@angular/compiler';
+import { ChangeDetectionStrategy, Component, DoCheck, Injectable, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CalendarEvent } from 'angular-calendar/modules/common/calendar-common.module';
 import { MessageService } from 'primeng/api';
 import { OCActivity } from './models/OCActivity';
@@ -9,11 +10,13 @@ import { ProjectSummaryMonth } from './models/ProjecSummaryMonth';
 import { ProjectSummary } from './models/ProjectSummary';
 
 @Injectable()
-export class Globals {
+export class Globals  {
   projectSummary: ProjectSummary = new ProjectSummary();
   project: OCProject = new OCProject();  
   PlanTabVisible = false;
   events: CalendarEvent[] = [];
+  AllTasks: OCActivity[] = [];  
+  NonPlannedTask: OCActivity[] = [];  
   MonthPeriod: ProjectSummaryMonth;
   
 	constructor(private http:HttpClient, private messageService: MessageService, public datepipe: DatePipe) { 
@@ -45,9 +48,11 @@ export class Globals {
     tmp.DailyFullWorkHours = this.project.DailyFullWorkHours;    
     tmp.ProjectName = this.project.ProjectName;
     tmp.HolyDays = this.project.HolyDays;
+    tmp.WebHook = this.project.WebHook;
+    tmp.APIKey = this.project.APIKey;
     tmp.StartDate = this.datepipe.transform(this.project.StartDate, 'yyyy-MM-dd HH:mm');
     tmp.EndDate = this.datepipe.transform(this.project.EndDate, 'yyyy-MM-dd HH:mm');    
-    return this.http.post('api/Planner/Project',tmp,{ headers: this.getHeaders() }).subscribe(() => {this.getProjectSummary(); this.getProjectInfo(); this.ToastSaveDate();});  
+    return this.http.post('api/Planner/Project',tmp,{ headers: this.getHeaders() }).subscribe(() => {this.getProjectSummary(); this.getProjectInfo();});  
   }
 
   getProjectInfo() {
@@ -60,19 +65,25 @@ export class Globals {
 
   getActivities() {    
     this.events = [];
+    this.NonPlannedTask = [];
     return this.http.get('api/Planner/Activities',{ headers: this.getHeaders() }).subscribe((data:any) => {
       let dataArr = JSON.parse(data);
-      Array.from(dataArr).forEach((item:OCActivity)=> 
+      this.AllTasks = dataArr;
+      this.AllTasks.forEach((item:OCActivity)=> 
         { 
-          const event:CalendarEvent = {
-            id : item.id,
-            title : item.title,
-            start : new Date(item.start_date),
-            end : new Date(item.end_date),
-            draggable : true,
-            resizable : { beforeStart: true, afterEnd: true }
+          if(item.planned) {
+            const event:CalendarEvent = {
+              id : item.id,
+              title : item.title,
+              start : new Date(item.start_date),
+              end : new Date(item.end_date),
+              draggable : true,
+              resizable : { beforeStart: true, afterEnd: true }
+            }
+            this.events = [...this.events, event];  
+          } else {
+            this.NonPlannedTask.push(item);
           }
-          this.events = [...this.events, event];
         });
     });
   }

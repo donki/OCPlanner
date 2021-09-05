@@ -38,10 +38,16 @@
   </div>    
   <div class="form-row">    
     <div class="form-group">
+      <label class="mr-1" >Planificada</label>
+      <p-checkbox [(ngModel)]="activity.planned" [binary]="true" [disabled]="true"></p-checkbox>
+    </div>
+  </div>
+  <div class="form-row">    
+    <div class="form-group">
       <label class="mr-1" >Referencia URL</label>
       <input id="url" type="url" pInputText [(ngModel)]="activity.url" size=100>
     </div>
-  </div>
+  </div>  
   <div class="form-row">    
     <div class="form-group">
       <label class="mr-1" >Etiquetas</label>

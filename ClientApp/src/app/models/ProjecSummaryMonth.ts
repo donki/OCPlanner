@@ -7,5 +7,7 @@ export class ProjectSummaryMonth {
     TotalProgress? = 0;
     PerceProgress? = 0;
     PercePlanned? = 0;
+    TotalNonPlannedHours? = 0;
+    PerceNonPlannedHours? = 0;    
     isMonthPeriod? = false;
 }

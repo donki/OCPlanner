@@ -34,7 +34,10 @@ import { ChipsModule } from 'primeng/chips';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TableModule } from 'primeng/table';
-
+import { faBook, faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { TasksComponent } from './tasks/tasks.component';
+import { DataViewModule } from 'primeng/dataview';
 
 export const protectedResourceMap: [string, string[]][] = [
   ['https://graph.microsoft.com/v1.0/me', ['user.read']]
@@ -78,10 +81,13 @@ export function MSALAngularConfigFactory(): MsalAngularConfiguration {
     CalendarComponent,
     CalendarDetailComponent,
     SummaryComponent,
-    OptionsComponent
+    OptionsComponent,
+    TasksComponent
     
   ],
   imports: [
+    DataViewModule,
+    FontAwesomeModule,
     TableModule,
     TabMenuModule,
     CheckboxModule,
@@ -125,4 +131,8 @@ export function MSALAngularConfigFactory(): MsalAngularConfiguration {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private library: FaIconLibrary) {
+    library.addIcons(faBook, faCalendar);
+  }
+}

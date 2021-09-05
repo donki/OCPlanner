@@ -19,11 +19,14 @@ namespace OCPlanner
         public List<string>? tags { get; set; }
         public string period { get; set; }
         public List<string> idlinked { get; set; }
+        public string externalid { get; set; }
+        public Boolean planned { get; set; }
 
         public OCActivity()
         {
             tags = new List<string>();
             idlinked = new List<string>();
+            planned = true;
         }
 
     }

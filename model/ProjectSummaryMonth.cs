@@ -18,5 +18,7 @@ namespace OCPlanner
         public DateTime BeginOfMonth;
         public DateTime EndOfMonth;
         public Boolean isMonthPeriod = false;
+        public int TotalNonPlannedHours = 0;
+        public int PerceNonPlannedHours = 0;
     }
 }

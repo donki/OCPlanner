@@ -5,11 +5,13 @@ import { CalendarComponent } from './calendar/calendar.component';
 import { SummaryComponent } from './summary/summary.component';
 import { OptionsComponent } from './options/options.component';
 import { CalendarDetailComponent } from './calendar/calendardetail/calendardetail.component';
+import { TasksComponent } from './tasks/tasks.component';
 
 const routes: Routes = [
   { path: '',  component: SummaryComponent,  canActivate: [MsalGuard] },
   { path: 'summary',  component: SummaryComponent,  canActivate: [MsalGuard] },
   { path: 'calendar',  component: CalendarComponent,  canActivate: [MsalGuard] }, 
+  { path: 'tasks',  component: TasksComponent,  canActivate: [MsalGuard] },   
   { path: 'calendardetail',  component: CalendarDetailComponent,  canActivate: [MsalGuard] }, 
   { path: 'calendardetail/:id',  component: CalendarDetailComponent,  canActivate: [MsalGuard] },   
   { path: 'options',  component: OptionsComponent,  canActivate: [MsalGuard] }

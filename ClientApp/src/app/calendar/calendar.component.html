@@ -1,42 +1,13 @@
+<div class="d-flex justify-content-center mt-2 mb-2"><i class="pi pi-calendar mr-2"></i>Calendario</div>
 <div style="margin-top: 10px;">
 <div class="row text-center">
     <div class="col-md-4">
       <div class="btn-group">
-        <button
-          class="btn btn-primary mb-2"
-          (click)="NewActivity()">
-        Nueva actividad
-        </button>  
-      </div>  
-    </div>  
-    <div class="col-md-4">
-      <div class="btn-group">
-        <div
-          class="btn btn-primary"
-          mwlCalendarPreviousView
-          [view]="view"
-          [(viewDate)]="viewDate"
-          [excludeDays]="excludeDays"
-        >
-          Anterior
-        </div>
-        <div
-          class="btn btn-outline-secondary"
-          mwlCalendarToday
-          [(viewDate)]="viewDate"
-        >
-          Hoy
-        </div>
-        <div
-          class="btn btn-primary"
-          mwlCalendarNextView
-          [view]="view"
-          [(viewDate)]="viewDate"
-          [excludeDays]="excludeDays"
-        >
-          Siguiente
-        </div>
-      </div>
+        <button class="mb-2 mr-5" icon="pi pi-plus" pButton (click)="NewActivity()"></button>          
+        <button class="mb-2 mr-1" icon="pi pi-caret-left" pButton mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" [excludeDays]="excludeDays"></button>
+        <button class="mb-2 mr-1" icon="pi pi-sort-down" pButton mwlCalendarToday [(viewDate)]="viewDate"></button>
+        <button class="mb-2 mr-1" icon="pi pi-caret-right" pButton mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" [excludeDays]="excludeDays"></button>
+      </div> 
     </div>
     <div class="col-md-4">
       <h3>

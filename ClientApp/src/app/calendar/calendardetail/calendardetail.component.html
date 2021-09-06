@@ -1,7 +1,7 @@
   <div class="form-row mt-2">
     <div class="form-group">
         <label class="mr-1">Título *</label>
-        <input type="text" pInputText [(ngModel)]="activity.title" size=100 required/>
+        <input type="text" class="title-width" pInputText [(ngModel)]="activity.title" size=100 required/>
     </div>
     <div class="form-group">
         <label class="mr-1 ml-1">Tipo *</label>
@@ -19,7 +19,7 @@
     </div>  
     <div class="form-group">
       <label class="mr-1 ml-1" >Duración *</label>
-      <p-spinner [(ngModel)]="activity.duration" [min]="0" required></p-spinner> 
+      <p-spinner [(ngModel)]="activity.duration" [min]="0.25" [step]="0.25" thosandSeparator="." decimalSeparator="," required></p-spinner> 
     </div>
     <div class="form-group">
       <label class="mr-1 ml-1" >Fecha Final</label>
@@ -27,13 +27,13 @@
     </div>
     <div class="form-group">
       <label class="mr-1 ml-1" >Progreso</label>
-      <p-spinner [(ngModel)]="activity.progress" [min]="0" required></p-spinner> 
+      <p-spinner [(ngModel)]="activity.progress" [min]="0" [step]="0.25" thosandSeparator="." decimalSeparator="," required></p-spinner>       
     </div>    
   </div>  
   <div class="form-row">
     <div class="form-group">
       <label class="mr-1 align-text-top">Descripción</label>
-      <textarea pInputTextarea [(ngModel)]="activity.description" [rows]="10" [cols]="100"></textarea>
+      <textarea pInputTextarea class="title-width" [(ngModel)]="activity.description" [rows]="10" [cols]="100"></textarea>
     </div>
   </div>    
   <div class="form-row">    
@@ -45,13 +45,13 @@
   <div class="form-row">    
     <div class="form-group">
       <label class="mr-1" >Referencia URL</label>
-      <input id="url" type="url" pInputText [(ngModel)]="activity.url" size=100>
+      <input id="url" type="url" class="title-width" pInputText [(ngModel)]="activity.url" size=100>
     </div>
   </div>  
   <div class="form-row">    
     <div class="form-group">
       <label class="mr-1" >Etiquetas</label>
-      <p-chips [(ngModel)]="activity.tags" max=100 allowDuplicate=false></p-chips>
+      <p-chips [(ngModel)]="activity.tags" max=100 size=100 class="title-width" allowDuplicate=false></p-chips>
     </div>
   </div>   
 <button type="button" (click)="SaveActivity()" class="btn btn-primary mr-2">Aceptar</button>

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { MsalService } from '@azure/msal-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { Globals } from './globals.service';
 
 @Component({
@@ -31,10 +31,11 @@ export class AppComponent {
 
   jwtHelper = new JwtHelperService();  
   
-  constructor(public globals:Globals,  private http: HttpClient, private routeService: Router,
+  constructor(public globals:Globals,  private http: HttpClient, private routeService: Router, private messageService: MessageService,
               private authService: MsalService, private _sanitizer: DomSanitizer, private spinner: NgxSpinnerService) {
     this.loggedIn = false;
     this.InitMSal();
+    this.globals.setToastFunction(this.ToastSaveDate,this.messageService);
   }
 
   ngOnInit() {
@@ -61,6 +62,7 @@ export class AppComponent {
 
   } 
 
+  
   private InitMSal() {
     if (!this.authService.getAccount()) {
       this.authService.loginRedirect();
@@ -94,6 +96,11 @@ export class AppComponent {
   navigateToGantt()
   {
     this.routeService.navigateByUrl("/Gantt");
+  }  
+
+  ToastSaveDate(messageService) {
+    messageService.clear();
+    messageService.add({severity:'success', summary:'Guardado', detail:'Los datos se han guardado correctamente.'});
   }  
   
 }

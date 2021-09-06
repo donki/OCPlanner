@@ -8,8 +8,8 @@ namespace OCPlanner
     public class OCProject
     {
         public string ProjectName { get; set; }
-        public int DailyPlannedWorkHours { get; set; }
-        public int DailyFullWorkHours { get; set; }
+        public decimal DailyPlannedWorkHours { get; set; }
+        public decimal DailyFullWorkHours { get; set; }
         public int PercePlannedHoursvsFullWorkHours { get; set; }
         public List<string> HolyDays { get; set; }
         public string StartDate { get; set; }

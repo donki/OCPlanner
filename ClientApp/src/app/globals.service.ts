@@ -18,10 +18,16 @@ export class Globals  {
   AllTasks: OCActivity[] = [];  
   NonPlannedTask: OCActivity[] = [];  
   MonthPeriod: ProjectSummaryMonth;
+  ToastFunction:(ms:any)=>void;
+  messageService:any;
   
-	constructor(private http:HttpClient, private messageService: MessageService, public datepipe: DatePipe) { 
+	constructor(private http:HttpClient, public datepipe: DatePipe) { 
   }  
 
+  public setToastFunction(f:(ms:any)=>void,messageService){
+    this.ToastFunction = f;
+    this.messageService = messageService;
+  }
   public getHeaders():HttpHeaders 
   {
     let jwt = localStorage.getItem('msal.idtoken');
@@ -52,7 +58,7 @@ export class Globals  {
     tmp.APIKey = this.project.APIKey;
     tmp.StartDate = this.datepipe.transform(this.project.StartDate, 'yyyy-MM-dd HH:mm');
     tmp.EndDate = this.datepipe.transform(this.project.EndDate, 'yyyy-MM-dd HH:mm');    
-    return this.http.post('api/Planner/Project',tmp,{ headers: this.getHeaders() }).subscribe(() => {this.getProjectSummary(); this.getProjectInfo();});  
+    return this.http.post('api/Planner/Project',tmp,{ headers: this.getHeaders() }).subscribe(() => {this.getProjectSummary(); this.getProjectInfo();this.ToastFunction(this.messageService);});  
   }
 
   getProjectInfo() {
@@ -88,21 +94,16 @@ export class Globals  {
     });
   }
 
-  ToastSaveDate() {
-    this.messageService.clear();
-    this.messageService.add({severity:'success', summary:'Guardado', detail:'Los datos se han guardado correctamente'});
-  }  
-
   insertTask(activity:OCActivity){
-    return this.http.post('api/Planner/Activities',activity,{ headers: this.getHeaders() }).subscribe(() => {this.getProjectSummary(); this.getProjectInfo();});    
+    return this.http.post('api/Planner/Activities',activity,{ headers: this.getHeaders() }).subscribe(() => {this.getProjectSummary(); this.getProjectInfo();this.ToastFunction(this.messageService);});    
   }
 
   updateTask(activity:OCActivity){
-    return this.http.put('api/Planner/Activities/'+activity.id,activity,{ headers: this.getHeaders() }).subscribe(() => {this.getProjectSummary(); this.getProjectInfo();});    
+    return this.http.put('api/Planner/Activities/'+activity.id,activity,{ headers: this.getHeaders() }).subscribe(() => {this.getProjectSummary(); this.getProjectInfo();this.ToastFunction(this.messageService);});    
   }
 
   deleteTask(activity){
-    return this.http.delete('api/Planner/Activities/'+activity.id,{ headers: this.getHeaders() }).subscribe(() => {this.getProjectSummary(); this.getProjectInfo();});    
+    return this.http.delete('api/Planner/Activities/'+activity.id,{ headers: this.getHeaders() }).subscribe(() => {this.getProjectSummary(); this.getProjectInfo();this.ToastFunction(this.messageService);});    
   }  
 }
 

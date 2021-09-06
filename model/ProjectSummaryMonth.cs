@@ -9,8 +9,8 @@ namespace OCPlanner
     {
         public string MonthName;
         public int TotalWorkHours;
-        public int TotalHoursPlanned;
-        public int TotalRemainHours;
+        public decimal TotalHoursPlanned;
+        public decimal TotalRemainHours;
         public int TotalTasks;
         public int TotalProgress;
         public int PerceProgress;
@@ -18,7 +18,7 @@ namespace OCPlanner
         public DateTime BeginOfMonth;
         public DateTime EndOfMonth;
         public Boolean isMonthPeriod = false;
-        public int TotalNonPlannedHours = 0;
+        public decimal TotalNonPlannedHours = 0;
         public int PerceNonPlannedHours = 0;
     }
 }

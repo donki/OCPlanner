@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -119,7 +120,7 @@ namespace OCPlanner.Controllers
             ganttProject.DailyFullWorkHours = project.DailyFullWorkHours;
             if (project.DailyFullWorkHours>0)
             {
-                ganttProject.PercePlannedHoursvsFullWorkHours = (project.DailyPlannedWorkHours * 100) / project.DailyFullWorkHours;
+                ganttProject.PercePlannedHoursvsFullWorkHours = (int)((project.DailyPlannedWorkHours * 100) / project.DailyFullWorkHours);
             }
             ganttProject.ProjectName = project.ProjectName;
             ganttProject.HolyDays = project.HolyDays;
@@ -164,6 +165,8 @@ namespace OCPlanner.Controllers
                 MonthPerido.EndOfMonth = Convert.ToDateTime(project.EndDate);
                 MonthPerido.isMonthPeriod = true;
                 pSummary.ProjectSummaryMonths.Add(MonthPerido);
+                KeepActivitiesFiveYears();
+
                 foreach (OCActivity t in project.Activities)
                 {
                     var MonthName = Convert.ToDateTime(t.start_date).ToString("MM/yyyy");
@@ -181,21 +184,21 @@ namespace OCPlanner.Controllers
 
                         Month.TotalTasks++;
                         Month.TotalProgress += Convert.ToInt32(Convert.ToDecimal(t.progress.Replace('.', ',')) * 100);
-                        Month.TotalHoursPlanned += Convert.ToInt32(t.duration);
+                        Month.TotalHoursPlanned += Convert.ToDecimal(t.duration);
                         if ((Convert.ToDateTime(project.StartDate).Date <= Convert.ToDateTime(t.start_date).Date) &&
                             (Convert.ToDateTime(project.EndDate).Date >= Convert.ToDateTime(t.start_date).Date))
                         {
                             MonthPerido.TotalTasks++;
                             MonthPerido.TotalProgress += Convert.ToInt32(Convert.ToDecimal(t.progress.Replace('.', ',')) * 100);
-                            MonthPerido.TotalHoursPlanned += Convert.ToInt32(t.duration);
+                            MonthPerido.TotalHoursPlanned += Convert.ToDecimal(t.duration);
                         }
                     } else
                     {
-                        Month.TotalNonPlannedHours += Convert.ToInt32(t.duration);
+                        Month.TotalNonPlannedHours += Convert.ToDecimal(t.duration);
                         if ((Convert.ToDateTime(project.StartDate).Date <= Convert.ToDateTime(t.start_date).Date) &&
                             (Convert.ToDateTime(project.EndDate).Date >= Convert.ToDateTime(t.start_date).Date))
                         {
-                            MonthPerido.TotalNonPlannedHours += Convert.ToInt32(t.duration);
+                            MonthPerido.TotalNonPlannedHours += Convert.ToDecimal(t.duration);
                         }
 
                     }
@@ -212,16 +215,16 @@ namespace OCPlanner.Controllers
                     var getWorkDays = (int)(psm.EndOfMonth - psm.BeginOfMonth).TotalDays;
 
 
-                    psm.TotalWorkHours = (Convert.ToInt32(getWorkDays) - getFreeDays) * project.DailyPlannedWorkHours;
+                    psm.TotalWorkHours = (int)((Convert.ToInt32(getWorkDays) - getFreeDays) * project.DailyPlannedWorkHours);
 
                     if (psm.TotalHoursPlanned > 0)
                     {
-                        psm.PerceProgress = (psm.TotalProgress) / psm.TotalHoursPlanned;
+                        psm.PerceProgress = (int)(psm.TotalProgress / psm.TotalHoursPlanned);
                     }
                     
                     if (pSummary.MonthlyWorkHours > 0)
                     {
-                        psm.PercePlanned = (psm.TotalHoursPlanned * 100) / psm.TotalWorkHours;
+                        psm.PercePlanned = (int)(psm.TotalHoursPlanned * 100 / psm.TotalWorkHours);
                         if (psm.isMonthPeriod)
                         {
                             pSummary.PercePlannedRange = psm.PercePlanned;
@@ -229,7 +232,7 @@ namespace OCPlanner.Controllers
                     }
 
                     psm.TotalRemainHours = psm.TotalWorkHours - psm.TotalHoursPlanned;
-                    psm.PerceNonPlannedHours = (psm.TotalNonPlannedHours * 100) / ((getWorkDays) *(project.DailyFullWorkHours - pSummary.DailyWorkHours));
+                    psm.PerceNonPlannedHours = (int)((psm.TotalNonPlannedHours * 100) / ((getWorkDays) *(project.DailyFullWorkHours - pSummary.DailyWorkHours)));
                 }
 
                 if (pSummary.ProjectSummaryMonths.Count >= 2)
@@ -284,11 +287,31 @@ namespace OCPlanner.Controllers
 
             lock (lockSaveProject)
             {
+                KeepActivitiesFiveYears();
                 return Ok(JsonConvert.SerializeObject(project.Activities));
             }
 
         }
 
+        private void KeepActivitiesFiveYears()
+        {
+            List<OCActivity> toRemove = new List<OCActivity>();
+
+            foreach (OCActivity t in project.Activities)
+            {
+                var date = Convert.ToDateTime(t.start_date).Date;
+                if (date >= new DateTime(DateTime.Today.Year+5,1,1))
+                {
+                    toRemove.Add(t);
+                }
+            }
+
+            foreach (OCActivity t in toRemove)
+            {
+                project.Activities.Remove(t);
+            }
+            SaveProject();
+        }
 
         [HttpGet]
         [Route("Activities/{id}")]
@@ -519,7 +542,8 @@ namespace OCPlanner.Controllers
         private OCActivity RecalcDates(OCActivity task)
         {
             var realStartDate = CalcRealStartDate(task);
-            task.end_date = realStartDate.AddHours(Convert.ToInt64(task.duration)).ToString("yyyy-MM-dd HH:mm");
+            task.duration = task.duration.Replace('.', ',');
+            task.end_date = realStartDate.AddMinutes(Convert.ToDouble(task.duration) *60).ToString("yyyy-MM-dd HH:mm");
             return task;
         }
 
@@ -556,14 +580,14 @@ namespace OCPlanner.Controllers
             return realStartDate;
         }
 
-        private int CalcDayOcupation(DateTime date)
+        private decimal CalcDayOcupation(DateTime date)
         {
-            int ocupation = 0;
+            decimal ocupation = 0;
             foreach(OCActivity activity in project.Activities)
             {
                 if (Convert.ToDateTime(activity.start_date).Date == date.Date)
                 {
-                    ocupation = ocupation + Convert.ToInt16(activity.duration);
+                    ocupation = ocupation + Convert.ToDecimal(activity.duration);
                 }
             }
 
@@ -572,9 +596,9 @@ namespace OCPlanner.Controllers
         
         private OCActivity SplitByMaxDayHours(OCActivity task)
         {
-            if (Convert.ToInt16(task.duration) > project.DailyPlannedWorkHours)
+            if (Convert.ToDecimal(task.duration) > project.DailyPlannedWorkHours)
             {
-                var FullDuration = Convert.ToInt32(task.duration);
+                var FullDuration = Convert.ToDecimal(task.duration);
                 var TasksPerDuration = FullDuration / project.DailyPlannedWorkHours;
 
                 if ((FullDuration % project.DailyPlannedWorkHours) >0)
@@ -585,24 +609,25 @@ namespace OCPlanner.Controllers
                 task.start_date = Convert.ToDateTime(task.start_date).Date.AddHours(9).ToString("yyyy-MM-dd HH:mm");
                 task.duration = project.DailyFullWorkHours.ToString();
                 RecalcDates(task);
-                FullDuration = FullDuration - project.DailyPlannedWorkHours;
+                FullDuration = (int)(FullDuration - project.DailyPlannedWorkHours);
 
                 for (int i = 1; i < TasksPerDuration; i++)
                 {
                     var tmp = CopyTask(task);
+                    tmp.parentid = task.id;
                     tmp.start_date = Convert.ToDateTime(task.start_date).Date.AddDays(i).AddHours(9).ToString("yyyy-MM-dd HH:mm");
                     tmp = RecalcDates(tmp);
                     if ((FullDuration - project.DailyPlannedWorkHours) >0)
                     {
                         tmp.duration = project.DailyPlannedWorkHours.ToString();
-                        FullDuration = FullDuration - project.DailyPlannedWorkHours;
+                        FullDuration = (int)(FullDuration - project.DailyPlannedWorkHours);
 
                     } else
                     {
                         tmp.duration = FullDuration.ToString();
                     }
 
-                    tmp.end_date = Convert.ToDateTime(tmp.start_date).AddHours(Convert.ToInt16(tmp.duration)).ToString("yyyy-MM-dd HH:mm");
+                    tmp.end_date = Convert.ToDateTime(tmp.start_date).AddHours(Convert.ToDouble(tmp.duration)).ToString("yyyy-MM-dd HH:mm");
 
                     task.idlinked.Add(tmp.id);
                     project.Activities.Add(tmp);

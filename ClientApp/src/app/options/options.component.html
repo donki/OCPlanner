@@ -7,9 +7,9 @@
 <p>Horas laborales</p>
 <div class="d-flex  mt-2 mb-2">
     <span class="mr-2 mt-2 overflow-text new-line"> Horas diarias laborales</span>   
-    <p-spinner class="mr-2" [(ngModel)]="this.globals.project.DailyFullWorkHours" [min]="0" [max]="8" size="2" (onChange)="this.globals.updateProjectInfo()"></p-spinner>         
+    <p-spinner class="mr-2" [(ngModel)]="this.globals.project.DailyFullWorkHours" [min]="0" [step]="0.25" thosandSeparator="." decimalSeparator="," required></p-spinner>              
     <span class="mr-2 mt-2 overflow-text new-line"> Horas diarias planificables</span>   
-    <p-spinner class="mr-2" [(ngModel)]="this.globals.project.DailyPlannedWorkHours" [min]="0" [max]="8" size="2" (onChange)="this.globals.updateProjectInfo()"></p-spinner>  
+    <p-spinner class="mr-2" [(ngModel)]="this.globals.project.DailyPlannedWorkHours" [min]="0" [step]="0.25" thosandSeparator="." decimalSeparator="," required></p-spinner>                  
     <span class="mr-2 mt-2 overflow-text new-line"> Horas semanales planificables</span>   
     <input type="text" class="mr-2" pInputText [value]="this.globals.projectSummary.WeeklyWorkHours" [disabled]="true" size="2"/>         
     <span class="mr-2 mt-2 overflow-text new-line"> Horas mensuales planificables</span>   

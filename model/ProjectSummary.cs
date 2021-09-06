@@ -7,9 +7,9 @@ namespace OCPlanner
 {
     public class ProjectSummary
     {
-        public int DailyWorkHours;
-        public int WeeklyWorkHours;
-        public int MonthlyWorkHours;
+        public decimal DailyWorkHours;
+        public decimal WeeklyWorkHours;
+        public decimal MonthlyWorkHours;
         public int PerceGlobalProgress;
         public int TotalProgress;
         public int TotalHoursPlanned = 0;

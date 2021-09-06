@@ -11,6 +11,7 @@ export class OCActivity {
 	tags: string[];
 	period: any;
 	idlinked: string[];
+	parentid: string;
 	planned: boolean = true;
 }
 

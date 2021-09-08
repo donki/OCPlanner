@@ -1,11 +1,11 @@
-<ngx-spinner></ngx-spinner>
-<body [hidden]=!canShow>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">  
+<!--<ngx-spinner></ngx-spinner>-->
+<body [hidden]="!canShow">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" [hidden]="!canShow">
+    <div class="container-fluid" [hidden]=!canShow>  
       <img src="../assets/matraz75.png" class="img-fluid float-left" />
       <p class="">{{this.globals.project.ProjectName}}
-        <span class="badge rounded-pill badge-notification mr-2" title= "Mes actual" style="color: white;" [ngStyle]="{'background-color': this.globals.projectSummary.PercePlannedHoursThisMonth > 100 ? 'orangered':'limegreen' }">{{this.globals.projectSummary.PercePlannedHoursThisMonth}}%</span>
-        <span class="badge rounded-pill badge-notification mr-2" title= "Mes siguiente" style="color: white;" [ngStyle]="{'background-color': this.globals.projectSummary.PercePlannedHoursNextMonth> 100 ? 'orangered':'limegreen' }">{{this.globals.projectSummary.PercePlannedHoursNextMonth}}%</span>        
+        <span class="badge rounded-pill badge-notification me-2" title= "Mes actual" style="color: white;" [ngStyle]="{'background-color': this.globals.projectSummary.PercePlannedHoursThisMonth > 100 ? 'orangered':'limegreen' }">{{this.globals.projectSummary.PercePlannedHoursThisMonth}}%</span>
+        <span class="badge rounded-pill badge-notification me-2" title= "Mes siguiente" style="color: white;" [ngStyle]="{'background-color': this.globals.projectSummary.PercePlannedHoursNextMonth> 100 ? 'orangered':'limegreen' }">{{this.globals.projectSummary.PercePlannedHoursNextMonth}}%</span>        
         <span class="badge rounded-pill badge-notification" title= "Rango" style="color: white;" [ngStyle]="{'background-color': this.globals.projectSummary.PercePlannedRange> 100 ? 'orangered':'limegreen' }">{{this.globals.projectSummary.PercePlannedRange}}%</span>                
       </p>
       <p class="">{{userName}}</p>
@@ -14,7 +14,7 @@
   <div  class="mt-2"> 
     <!--<p-tabMenu class="hidden-on-mobile" [model]="items"></p-tabMenu>-->
     <p-menu #menu [popup]="true" [model]="items"></p-menu>
-    <button class="mb-2" type="button" icon="pi pi-list" pButton (click)="menu.toggle($event)"></button>
+    <button class="mb-2" type="button" icon="pi pi-list" pButton (click)="menu.toggle($event)" [hidden]=!canShow></button>
   </div>  
   <router-outlet></router-outlet>
   <p-toast position="top-right"></p-toast>

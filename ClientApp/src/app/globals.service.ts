@@ -17,14 +17,16 @@ export class Globals  {
   events: CalendarEvent[] = [];
   AllTasks: OCActivity[] = [];  
   NonPlannedTask: OCActivity[] = [];  
-  MonthPeriod: ProjectSummaryMonth;
-  ToastFunction:(ms:any)=>void;
+  MonthPeriod: ProjectSummaryMonth = new ProjectSummaryMonth();
+  ToastFunction:(ms:any)=>void = ()=>{} ;
   messageService:any;
+  isMobile:boolean = false;
   
 	constructor(private http:HttpClient, public datepipe: DatePipe) { 
+    this.isMobile = window.innerWidth<640
   }  
 
-  public setToastFunction(f:(ms:any)=>void,messageService){
+  public setToastFunction(f:(ms:any)=>void,messageService: MessageService){
     this.ToastFunction = f;
     this.messageService = messageService;
   }
@@ -62,7 +64,7 @@ export class Globals  {
   }
 
   getProjectInfo() {
-    return this.http.get('api/Planner/Project',{ headers: this.getHeaders() }).subscribe((data:string) => { 
+    return this.http.get('api/Planner/Project',{ headers: this.getHeaders() }).subscribe((data:any) => { 
                 this.project = JSON.parse(data);
                 this.project.StartDate = new Date(this.project.StartDate);  
                 this.project.EndDate = new Date(this.project.EndDate);                  
@@ -102,7 +104,7 @@ export class Globals  {
     return this.http.put('api/Planner/Activities/'+activity.id,activity,{ headers: this.getHeaders() }).subscribe(() => {this.getProjectSummary(); this.getProjectInfo();this.ToastFunction(this.messageService);});    
   }
 
-  deleteTask(activity){
+  deleteTask(activity:OCActivity){
     return this.http.delete('api/Planner/Activities/'+activity.id,{ headers: this.getHeaders() }).subscribe(() => {this.getProjectSummary(); this.getProjectInfo();this.ToastFunction(this.messageService);});    
   }  
 }

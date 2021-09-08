@@ -26,7 +26,7 @@ export class TasksComponent implements OnInit {
     this.routeService.navigateByUrl('/calendardetail/nonplanned');
   }
 
-  EditTask(id) {
+  EditTask(id:string) {
     this.routeService.navigateByUrl('/calendardetail/nonplanned'+id);
   }
 

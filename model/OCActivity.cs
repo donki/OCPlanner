@@ -28,6 +28,7 @@ namespace OCPlanner
             tags = new List<string>();
             idlinked = new List<string>();
             planned = true;
+            progress = "0";
         }
 
     }

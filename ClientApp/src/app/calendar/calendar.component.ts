@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit,  ViewEncapsulation } from '@angular/core';
+import { Component, OnInit,  ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { CalendarDayViewBeforeRenderEvent, CalendarEvent, CalendarEventTimesChangedEvent, CalendarMonthViewBeforeRenderEvent, CalendarView, CalendarViewPeriod, CalendarWeekViewBeforeRenderEvent, DAYS_OF_WEEK } from 'angular-calendar';
 import { Globals } from '../globals.service';
@@ -27,9 +27,9 @@ export class CalendarComponent implements OnInit {
   weekendDays: number[] = [DAYS_OF_WEEK.SATURDAY, DAYS_OF_WEEK.SUNDAY];  
   excludeDays: number[] = [0, 6];
 
-  period: CalendarViewPeriod;
+  period: any = null;
 
-  constructor(private cdr: ChangeDetectorRef, private http:HttpClient, private globals:Globals, private routeService: Router, public datepipe: DatePipe) {}
+  constructor(private http:HttpClient, public globals:Globals, private routeService: Router, public datepipe: DatePipe) {}
 
   beforeViewRender(
     event:

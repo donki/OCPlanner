@@ -1,17 +1,17 @@
 export class OCActivity {
-	id: string;
-	title: string;
-	description: string;
-	duration: string;
-	progress: string;	
+	id: string = '';
+	title: string = '';
+	description: string = '';
+	duration: string = '0';
+	progress: string = '0';	
 	start_date: any;
 	end_date: any;
-	url: string;
+	url: string = '';
 	activitytype: any;
-	tags: string[];
+	tags: string[]  = [];
 	period: any;
-	idlinked: string[];
-	parentid: string;
+	idlinked: string[] = [];
+	parentid: string  = '';
 	planned: boolean = true;
 }
 

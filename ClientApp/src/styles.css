@@ -1,45 +1,40 @@
+@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
+@import "../node_modules/primeicons/primeicons.css";
+@import "../node_modules/primeng/resources/themes/saga-blue/theme.css";
+@import "../node_modules/primeng/resources/primeng.min.css";
+
 
 ::marker {
   color: white;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif !important;
-  margin: 10px !important;
+    margin: 5px;
 }
 
-.align-right{
-  float: right;
+.text-right {
+    text-align: right !important;
 }
 
-@media only screen and (max-device-width : 640px) {
-  .hidden-on-mobile {
-    display: none;
+@media screen and (max-width: 600px) {
+    .width-mobile {
+        max-width: 375px !important;
+    }
+
+    .hidden-on-mobile{
+        visibility: collapse !important;
+    }
+
+    .overflow-text{
+        text-overflow: ellipsis !important;
+    }
+
+    .new-line {
+        display: block;
+    }
   }
 
-  .visible-on-mobile {
-    visibility: visible;
-  }
-
-  .overflow-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .new-line {
-    display: block;
-  }
-
-  .d-flex {
-    display: inline !important;
-  }
-
-  .title-width {
-    width: 350px;
-  }
-}
 
 
 

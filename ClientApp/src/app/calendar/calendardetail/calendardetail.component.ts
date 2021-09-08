@@ -15,12 +15,13 @@ import { ActivityTypes, OCActivity, Period } from "src/app/models/OCActivity";
 
 export class CalendarDetailComponent implements OnInit {
 
-    activitytypes: ActivityTypes[];
-    periods: Period[];
+    activitytypes: ActivityTypes[] =[];
+    periods: Period[] = [];
     
     activity:OCActivity = new OCActivity();
     editing: boolean = false;
     returnroute:string = 'calendar';
+
 
     constructor( private route: ActivatedRoute, private routeService: Router, 
                  private confirmationService: ConfirmationService, private globals:Globals, 
@@ -59,7 +60,7 @@ export class CalendarDetailComponent implements OnInit {
                         this.activity = JSON.parse(data);
                         this.activity.start_date = new Date(this.activity.start_date);
                         this.activity.end_date = new Date(this.activity.end_date);                    
-                        this.activitytypes.forEach((type) => {
+                        /*this.activitytypes.forEach((type) => {
                             if (this.activity.activitytype == type.code ) {
                                 this.activity.activitytype = type;
                             }
@@ -68,7 +69,7 @@ export class CalendarDetailComponent implements OnInit {
                             if (this.activity.period == type.code ) {
                                 this.activity.period = type;
                             }
-                          });                                             
+                          });  */                                           
                         });
     
             } 
@@ -80,7 +81,7 @@ export class CalendarDetailComponent implements OnInit {
     }
 
     SaveActivity(){
-     if (
+     if ( 
           (this.activity.title == undefined) ||
           (this.activity.activitytype == undefined) ||
           (this.activity.start_date == undefined) ||
@@ -97,8 +98,8 @@ export class CalendarDetailComponent implements OnInit {
         {
             this.activity.start_date = this.datepipe.transform(this.activity.start_date, 'yyyy-MM-dd HH:mm');
             this.activity.end_date = this.datepipe.transform(this.activity.end_date, 'yyyy-MM-dd HH:mm');            
-            this.activity.activitytype = (this.activity.activitytype as unknown as ActivityTypes).code;
-            this.activity.period = (this.activity.period as unknown as Period).code;
+            //this.activity.activitytype = (this.activity.activitytype as unknown as ActivityTypes).code;
+            //this.activity.period = (this.activity.period as unknown as Period).code;
             this.activity.duration = this.activity.duration.toString();
             if (this.activity.progress == undefined) 
             {

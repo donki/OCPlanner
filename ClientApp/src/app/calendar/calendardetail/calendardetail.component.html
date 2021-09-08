@@ -1,61 +1,74 @@
-  <div class="form-row mt-2">
-    <div class="form-group">
-        <label class="mr-1">Título *</label>
-        <input type="text" class="title-width" pInputText [(ngModel)]="activity.title" size=100 required/>
+  <div class="card">
+    <div class="field grid ">
+        <label for="Title" class="col-5 mb-2 md:col-2 md:mb-0">Título *</label>
+        <div class="col-12 md:col-10">
+          <input id="Title" type="text" pInputText class="inputfield w-full width-mobile" size=100 [(ngModel)]="activity.title"/>
+        </div>        
     </div>
-    <div class="form-group">
-        <label class="mr-1 ml-1">Tipo *</label>
-        <p-dropdown [options]="activitytypes" [showClear]="true" placeholder="Seleccione tipo de actividad" [(ngModel)]="activity.activitytype" optionLabel="name" optionValue="code"></p-dropdown> 
-    </div>
-    <div class="form-group">
-      <label class="mr-1 ml-1">Periodo *</label>
-      <p-dropdown [options]="periods" [showClear]="true" placeholder="Seleccione el periodo" [(ngModel)]="activity.period" optionLabel="name" optionValue="code"></p-dropdown> 
-    </div>    
-  </div>  
-  <div class="form-row">
-    <div class="form-group">
-      <label class="mr-1">Fecha Inicio *</label>
-      <p-calendar [(ngModel)]="activity.start_date" dateFormat="dd/mm/yy" [showTime]="true" required></p-calendar> 
+    <div class="field grid">
+      <label for="Type" class="col-5 mb-2 md:col-2 md:mb-0">Tipo *</label>
+      <div class="col-12 md:col-10">
+        <p-dropdown id="Type" size=50 class="width-mobile inputfield w-full" [options]="activitytypes" [showClear]="true" placeholder="Seleccione tipo de actividad" [(ngModel)]="activity.activitytype" optionLabel="name" optionValue="code"></p-dropdown> 
+      </div>        
+    </div> 
+    <div class="field grid">
+      <label for="Type" class="col-12 mb-2 md:col-2 md:mb-0">Periodo *</label>
+      <div class="col-12 md:col-10">
+        <p-dropdown [options]="periods" [showClear]="true" placeholder="Seleccione el periodo" [(ngModel)]="activity.period" optionLabel="name" optionValue="code"></p-dropdown> 
+      </div>        
+    </div>           
+    <div class="field grid">
+      <label for="Type" class="col-12 mb-2 md:col-2 md:mb-0">Inicio *</label>
+      <div class="col-12 md:col-10">
+        <p-calendar [(ngModel)]="activity.start_date" dateFormat="dd/mm/yy" [showTime]="true" ></p-calendar> 
+      </div>        
+    </div>           
+    <div class="field grid">
+      <label for="Type" class="col-12 mb-2 md:col-2 md:mb-0">Duración *</label>
+      <div class="col-12 md:col-10">
+        <p-inputNumber [showButtons]="true" [(ngModel)]="activity.duration" [min]="0.25" [step]="0.25"></p-inputNumber> 
+      </div>        
     </div>  
-    <div class="form-group">
-      <label class="mr-1 ml-1" >Duración *</label>
-      <p-spinner [(ngModel)]="activity.duration" [min]="0.25" [step]="0.25" thosandSeparator="." decimalSeparator="," required></p-spinner> 
-    </div>
-    <div class="form-group">
-      <label class="mr-1 ml-1" >Fecha Final</label>
-      <p-calendar [(ngModel)]="activity.end_date" dateFormat="dd/mm/yy" [showTime]="true" required [disabled]="true"></p-calendar> 
-    </div>
-    <div class="form-group">
-      <label class="mr-1 ml-1" >Progreso</label>
-      <p-spinner [(ngModel)]="activity.progress" [min]="0" [step]="0.25" thosandSeparator="." decimalSeparator="," required></p-spinner>       
-    </div>    
-  </div>  
-  <div class="form-row">
-    <div class="form-group">
-      <label class="mr-1 align-text-top">Descripción</label>
-      <textarea pInputTextarea class="title-width" [(ngModel)]="activity.description" [rows]="10" [cols]="100"></textarea>
-    </div>
+    <div class="field grid">
+      <label for="Type" class="col-12 mb-2 md:col-2 md:mb-0">Fecha Final</label>
+      <div class="col-12 md:col-10">
+        <p-calendar [(ngModel)]="activity.end_date" dateFormat="dd/mm/yy" [showTime]="true" [disabled]="true"></p-calendar> 
+      </div>        
+    </div>  
+    <div class="field grid">
+      <label for="Type" class="col-12 mb-2 md:col-2 md:mb-0">Progreso</label>
+      <div class="col-12 md:col-10">
+        <p-inputNumber [showButtons]="true" [(ngModel)]="activity.progress" [min]="0" [step]="0.25" [disabled]="true"></p-inputNumber> 
+      </div>        
+    </div>      
+    <div class="field grid">
+      <label for="Type" class="col-12 mb-2 md:col-2 md:mb-0">Descripción</label>
+      <div class="col-12 md:col-10">
+        <textarea pInputTextarea class="width-mobile" [(ngModel)]="activity.description" [rows]="10" [cols]="100"></textarea>
+      </div>        
+    </div>                 
+    <div class="field grid">
+      <label for="Type" class="col-12 mb-2 md:col-2 md:mb-0">Planificada</label>
+      <div class="col-12 md:col-10">
+        <p-checkbox [(ngModel)]="activity.planned" [binary]="true" [disabled]="true"></p-checkbox>
+      </div>        
+    </div>                 
+    <div class="field grid">
+      <label for="Type" class="col-12 mb-2 md:col-2 md:mb-0">Referencia URL</label>
+      <div class="col-12 md:col-10">
+        <input id="url" type="url"  pInputText [(ngModel)]="activity.url" size=100 class="width-mobile">
+      </div>        
+    </div>                 
+    <div class="field grid">
+      <label for="Type" class="col-12 mb-2 md:col-2 md:mb-0">Etiquetas</label>
+      <div class="col-12 md:col-10">
+        <p-chips [(ngModel)]="activity.tags" size=100 class="width-mobile" ></p-chips>
+      </div>        
+    </div> 
   </div>    
-  <div class="form-row">    
-    <div class="form-group">
-      <label class="mr-1" >Planificada</label>
-      <p-checkbox [(ngModel)]="activity.planned" [binary]="true" [disabled]="true"></p-checkbox>
-    </div>
-  </div>
-  <div class="form-row">    
-    <div class="form-group">
-      <label class="mr-1" >Referencia URL</label>
-      <input id="url" type="url" class="title-width" pInputText [(ngModel)]="activity.url" size=100>
-    </div>
-  </div>  
-  <div class="form-row">    
-    <div class="form-group">
-      <label class="mr-1" >Etiquetas</label>
-      <p-chips [(ngModel)]="activity.tags" max=100 size=100 class="title-width" allowDuplicate=false></p-chips>
-    </div>
-  </div>   
-<button type="button" (click)="SaveActivity()" class="btn btn-primary mr-2">Aceptar</button>
-<button type="button" (click)="CloseActivityDetail()" class="btn btn-primary mr-2">Cancelar</button>     
-<button type="button" (click)="RemoveActivity()" class="btn btn-primary mr-2">Borrar</button>          
+
+<button type="button" (click)="SaveActivity()" class="btn btn-primary me-2 mt-2">Aceptar</button>
+<button type="button" (click)="CloseActivityDetail()" class="btn btn-primary me-2 mt-2">Cancelar</button>     
+<button type="button" (click)="RemoveActivity()" class="btn btn-primary me-2 mt-2">Borrar</button>          
 
 <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

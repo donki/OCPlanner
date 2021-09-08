@@ -6,11 +6,11 @@ export class OCProject {
   DailyPlannedWorkHours: number = 0;
   DailyFullWorkHours: number = 0;
   PercePlannedHoursvsFullWorkHours: number = 0;
-  Tasks: OCActivity[];
-  NonPlannedActivities: OCActivity[];
-  HolyDays: string [];
+  Tasks: OCActivity[] = [];
+  NonPlannedActivities: OCActivity[] = [];
+  HolyDays: string [] = [];
   StartDate: any;
   EndDate: any;
-  WebHook: string;
-  APIKey: string;
+  WebHook: string = '';
+  APIKey: string = '';
 }
